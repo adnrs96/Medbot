@@ -1,0 +1,16 @@
+body, html{
+  height:100%;
+}
+body {
+  background-color:#203D5E;
+  margin:0;
+}
+.width50{
+  width:50%;
+}
+.pad20T{
+  padding-top:20px;
+}
+.minH200{
+  min-height:200px;
+}
