@@ -1,7 +1,7 @@
 $(document).ready(function(){
 $("#query_box_send").click(function (da) {
   $.ajax({
-          url: "http://medbot-jokebot.rhcloud.com/query",
+          url: "http://"+window.location.host+"/query",
         dataType: 'json',
         method: "POST",
         data: { key:$("#query_box").val() }
