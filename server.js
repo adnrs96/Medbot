@@ -1,5 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+//var zerorpc = require("zerorpc");
+//var client = new zerorpc.Client();
+
 
 var app = express();
 app.use(bodyParser.json());
@@ -12,6 +15,11 @@ app.set('ip',(process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'));
 app.use(express.static(__dirname +'/CSS'));
 app.use(express.static(__dirname +'/JS'));
 app.post('/query',function (req,res) {
+  /*client.connect("tcp://"+app.get('ip')+":4242");
+  client.invoke("hello", req.body.key, function(error, resp, more) {
+      console.log(resp);
+      res.json({key:resp});
+  });*/
   console.log(req.body.key);
   res.json({key:req.body.key});
 });
