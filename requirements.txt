@@ -1,0 +1,3 @@
+nltk
+zerorpc
+msgpack-python
