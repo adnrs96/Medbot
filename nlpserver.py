@@ -1,8 +1,8 @@
-import sys, json, nltk
+import sys,nltk
 
 def read_in():
     lines = sys.stdin.readlines()
-    return json.loads(lines[0])
+    return lines[0]
 
 def main():
     name = read_in()
