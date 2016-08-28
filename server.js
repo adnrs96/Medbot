@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var zerorpc = require("zerorpc");
-var client = new zerorpc.Client();
+//var zerorpc = require("zerorpc");
+//var client = new zerorpc.Client();
 
 
 var app = express();
