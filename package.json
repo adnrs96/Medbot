@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js & $OPENSHIFT_DATA_DIR/bin/python $OPENSHIFT_REPO_DIR/nlpserver.py &"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/adnrs96/Medbot#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "child_process": "^1.0.2",
     "express": "^4.14.0"
   }
 }

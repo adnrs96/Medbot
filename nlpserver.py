@@ -1,21 +1,18 @@
-import zerorpc
-import nltk
-import os
-class medBot(object):
-    def hello(self, name):
-        sentences = nltk.sent_tokenize(name)
-        sentences = [nltk.word_tokenize(sent) for sent in sentences]
-        sentences = [nltk.pos_tag(sent) for sent in sentences]
-        return "Hello, %s" % sentences
+import sys, json, nltk
 
-ip = os.environ.get('OPENSHIFT_NODEJS_IP')
-if not ip:
-    ip = '127.0.0.1'
-port = os.environ.get('OPENSHIFT_NODEJS_PORT')
-if not port:
-    port = '4242'
-tcp_address = 'tcp://'+ip+':4242'
-s = zerorpc.Server(medBot())
-s.bind(tcp_address)
-s.run()
+def read_in():
+    lines = sys.stdin.readlines()
+    return json.loads(lines[0])
+
+def main():
+    name = read_in()
+    nltk.data.path.append("/var/lib/openshift/57c2ff777628e1c6210000af/app-root/data/bin/nltk_data")
+    sentences = nltk.sent_tokenize(name)
+    sentences = [nltk.word_tokenize(sent) for sent in sentences]
+    sentences = [nltk.pos_tag(sent) for sent in sentences]
+    print "Hello, %s" % sentences
+
+if __name__ == '__main__':
+    main()
+
 ##https://blogs.princeton.edu/etc/files/2014/03/Text-Analysis-with-NLTK-Cheatsheet.pdf

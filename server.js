@@ -1,10 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-//var zerorpc = require("zerorpc");
-//var client = new zerorpc.Client();
+var spawn = require('child_process').spawn;
 
-
-var app = express();
+var app = express(),data1 = [1,2,3,4,5,6,7,8,9];
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -15,13 +13,18 @@ app.set('ip',(process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'));
 app.use(express.static(__dirname +'/CSS'));
 app.use(express.static(__dirname +'/JS'));
 app.post('/query',function (req,res) {
-  client.connect("tcp://"+app.get('ip')+":4242");
-  client.invoke("hello", req.body.key, function(error, resp, more) {
-      console.log(resp);
-      res.json({key:resp});
+  var py    = spawn('$OPENSHIFT_DATA_DIR/bin/python', ['nlpserver.py']);
+  var nlpdata='';
+  py.stdout.on('data', function(data){
+    nlpdata += data.toString();
   });
-  console.log(req.body.key);
-  //res.json({key:req.body.key});
+  py.stdout.on('end', function(){
+    console.log('Sum of numbers=',nlpdata);
+    res.json({key:nlpdata});
+    console.log(req.body.key);
+  });
+  py.stdin.write(req.body.key);
+  py.stdin.end();
 });
 app.get('/',function(req,res){
 	res.sendFile(__dirname+'/views/index.html');
