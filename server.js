@@ -42,13 +42,13 @@ app.use(express.static(__dirname +'/images'));
 app.post('/query',function (req,res) {
 
   diagnosis_format = shrtntodise.restoreSessionVariables('staticuser');
-  if(diagnosis_format)
+  if(!diagnosis_format)
   diagnosis_format= {
     "sex": "",
     "age": "",
     "evidence": []
   };
-  console.log("Message from client recieved and says",req.body.key);
+  console.log("Message from client recieved and says ",req.body.key);
   var symlist = tokenizer.tokenize(req.body.key);
   if(diagnosis_format['sex']==null)
   diagnosis_format['sex']='male';
@@ -58,41 +58,43 @@ app.post('/query',function (req,res) {
   });*/
   if(diagnosis_format['age']==null)
   diagnosis_format['age']='20';
-
-  var symlist1 = [];
-  for(var i=0;i<symlist.length;i++)
-  {
-    var tmp = shrtntodise.isSymtomFilter(symlist[i]);
-    if(tmp)
-    {
-      symlist1.push(tmp);
-    }
-  }
-  symlist=symlist1;
-  //symlist=['s_21'];
-  for(var i=0;i<symlist.length;i++)
-  {
-    var new_evi_form = evi_format;
-    new_evi_form.id=symlist[i];
-    diagnosis_format.evidence.push(new_evi_form);
-  }
-  options.body=diagnosis_format;
-  request.post(options,function(err,responce,body){
+  console.log(symlist);
+  shrtntodise.isSymtomFilter(symlist,function(err,symlist){
     if(err)
     {
       console.log(err);
     }
-    if(body)
-    {
-      console.log("Body says",body.question.text)
-      res.json({key:body.question.text});
-    }
     else {
-      res.json({key:"Some error occured while connecting to brain"});
+      console.log(symlist);
+      for(var i=0;i<symlist.length;i++)
+      {
+        var new_evi_form = evi_format;
+        new_evi_form.id=symlist[i];
+        diagnosis_format['evidence'].push(new_evi_form);
+      }
+      options.body=diagnosis_format;
+      console.log(options);
+      request.post(options,function(err,responce,body){
+        if(err)
+        {
+          console.log(err);
+        }
+        if(body)
+        {
+          console.log("Body says",body)
+          res.json({key:body.question.text});
+        }
+        else {
+          res.json({key:"Some error occured while connecting to brain"});
+        }
+
+      });
+      shrtntodise.updateSessionVariables('staticuser',diagnosis_format);
     }
 
   });
-  shrtntodise.updateSessionVariables('staticuser',diagnosis_format);
+  //symlist=['s_21'];
+
 
 });
 app.get('/',function(req,res){
