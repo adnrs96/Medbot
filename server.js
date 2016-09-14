@@ -41,26 +41,24 @@ app.use(express.static(__dirname +'/SCSS'));
 app.use(express.static(__dirname +'/images'));
 app.post('/query',function (req,res) {
 
-  /*diagnosis_format = shrtntodise.restoreSessionVariables('staticuser');
+  diagnosis_format = shrtntodise.restoreSessionVariables('staticuser');
   if(diagnosis_format)
   diagnosis_format= {
     "sex": "",
     "age": "",
     "evidence": []
-  };*/
+  };
   console.log("Message from client recieved and says",req.body.key);
   var symlist = tokenizer.tokenize(req.body.key);
-  /*if(diagnosis_format.sex==null)
-  symlist.forEach(function(data){
+  if(diagnosis_format.sex==null)
+  diagnosis_format['sex']='male';
+  /*symlist.forEach(function(data){
     if(data=='male'||data=='female'||data=='M'||data=='F')
     diagnosis_format.sex=data;
-  });
+  });*/
   if(diagnosis_format.age==null)
-  diagnosis_format.age='20';
-*/
   diagnosis_format['age']='20';
-  diagnosis_format['sex']='male';
-  /*symlist = symlist.filter(shrtntodise.isSymtomFilter);
+
   var symlist1 = [];
   for(var i=0;i<symlist.length;i++)
   {
@@ -70,8 +68,8 @@ app.post('/query',function (req,res) {
       symlist1.push(tmp);
     }
   }
-  symlist=symlist1;*/
-  symlist=['s_21'];
+  symlist=symlist1;
+  //symlist=['s_21'];
   for(var i=0;i<symlist.length;i++)
   {
     var new_evi_form = evi_format;
@@ -94,6 +92,7 @@ app.post('/query',function (req,res) {
     }
 
   });
+  shrtntodise.updateSessionVariables('staticuser',diagnosis_format);
 
 });
 app.get('/',function(req,res){
