@@ -2,7 +2,7 @@ module.exports = {};
 
   var mongo = require('mongodb');
   var MongoClient = mongo.MongoClient;
-  var url ="mongodb://localhost:27017/medbot";
+  var url =process.env.OPENSHIFT_MONGO_URL;
 
   module.exports.shortdowntodiseaselist= function (symlist,callback)
   {

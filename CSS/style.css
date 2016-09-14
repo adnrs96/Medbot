@@ -32,8 +32,9 @@ body {
   left: 0;
   z-index: 1;
   background: url("z21dQwp-6.jpg") no-repeat 0 0;
-  -webkit-background-size: cover;
-
+   background-size: 100% 100%;
+  -webkit-transform: scale(1.2);
+          transform: scale(1.2);
 }
 
 /*--------------------

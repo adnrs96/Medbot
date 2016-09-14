@@ -16,16 +16,16 @@ var options = {
   },
   body:{}
   };
-var evi_format = {
-"id": "",
-"choice_id": "present"
-};
+  var evi_format = {
+  "id": "",
+  "choice_id": "present"
+  };
 
-var diagnosis_format = {
-  "sex": "",
-  "age": "",
-  "evidence": []
-};
+  var diagnosis_format = {
+    "sex": "",
+    "age": "",
+    "evidence": []
+  };
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', (process.env.OPENSHIFT_NODEJS_PORT || 8080));
@@ -50,13 +50,9 @@ app.post('/query',function (req,res) {
   };
   console.log("Message from client recieved and says ",req.body.key);
   var symlist = tokenizer.tokenize(req.body.key);
-  if(diagnosis_format['sex']==null)
+  if(!diagnosis_format['sex'])
   diagnosis_format['sex']='male';
-  /*symlist.forEach(function(data){
-    if(data=='male'||data=='female'||data=='M'||data=='F')
-    diagnosis_format.sex=data;
-  });*/
-  if(diagnosis_format['age']==null)
+  if(!diagnosis_format['age'])
   diagnosis_format['age']='20';
   console.log(symlist);
   shrtntodise.isSymtomFilter(symlist,function(err,symlist){
@@ -70,10 +66,9 @@ app.post('/query',function (req,res) {
       {
         var new_evi_form = evi_format;
         new_evi_form.id=symlist[i];
-        diagnosis_format['evidence'].push(new_evi_form);
+        diagnosis_format.evidence.push(new_evi_form);
       }
       options.body=diagnosis_format;
-      console.log(options);
       request.post(options,function(err,responce,body){
         if(err)
         {
@@ -93,7 +88,6 @@ app.post('/query',function (req,res) {
     }
 
   });
-  //symlist=['s_21'];
 
 
 });
