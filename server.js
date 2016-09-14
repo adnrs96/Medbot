@@ -50,13 +50,13 @@ app.post('/query',function (req,res) {
   };
   console.log("Message from client recieved and says",req.body.key);
   var symlist = tokenizer.tokenize(req.body.key);
-  if(diagnosis_format.sex==null)
+  if(diagnosis_format['sex']==null)
   diagnosis_format['sex']='male';
   /*symlist.forEach(function(data){
     if(data=='male'||data=='female'||data=='M'||data=='F')
     diagnosis_format.sex=data;
   });*/
-  if(diagnosis_format.age==null)
+  if(diagnosis_format['age']==null)
   diagnosis_format['age']='20';
 
   var symlist1 = [];
