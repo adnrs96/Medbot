@@ -84,7 +84,7 @@ module.exports.isSymtomFilter=function (val)
       }
       else {
         db.close();
-        return true;
+        return document.syn_api_id;
       }
       });
     }
@@ -118,6 +118,26 @@ module.exports.restoreSessionVariables=function (id)
         return document.diagnosis_format;
       }
       });
+    }
+  });
+}
+
+module.exports.updateSessionVariables=function (id,data)
+{
+  MongoClient.connect(url,function(err,db){
+    if(err)
+    {
+      console.log(err);
+       callback(err,[]);
+    }
+    else
+    {
+      var users = db.collection('users');
+      users.update({_id:id},{
+      _id:id,
+      diagnosis_format:data
+      },{
+         upsert: true });
     }
   });
 }
