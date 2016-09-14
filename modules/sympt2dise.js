@@ -66,7 +66,7 @@ module.exports.isSymtomFilter=function (val)
     if(err)
     {
       console.log(err);
-       callback(err,[]);
+       return null;
     }
     else
     {
@@ -97,7 +97,7 @@ module.exports.restoreSessionVariables=function (id)
     if(err)
     {
       console.log(err);
-       callback(err,[]);
+       return null;
     }
     else
     {
@@ -128,7 +128,7 @@ module.exports.updateSessionVariables=function (id,data)
     if(err)
     {
       console.log(err);
-       callback(err,[]);
+      return null;
     }
     else
     {
