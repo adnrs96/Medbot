@@ -2,7 +2,7 @@ module.exports = {};
 
   var mongo = require('mongodb');
   var MongoClient = mongo.MongoClient;
-  var url =process.env.OPENSHIFT_MONGO_URL;
+  var url ="mongodb://medbot:paank@ds029466.mlab.com:29466/medbot";//process.env.OPENSHIFT_MONGO_URL;
 
   module.exports.shortdowntodiseaselist= function (symlist,callback)
   {
@@ -16,7 +16,7 @@ module.exports = {};
         {
           var symptoms = db.collection('symptoms');
           console.log("SymList "+symlist);
-          symptoms.find({sym_name:{$in:symlist}}).toArray(function(err,document){
+          symptoms.find({name:{$in:symlist}}).toArray(function(err,document){
             //console.log("Doc"+document.length);
             var disList = [];
                 if(err){
@@ -71,7 +71,7 @@ module.exports.isSymtomFilter=function (symlist,callback)
     else
     {
         var symptoms = db.collection('symptoms');
-        symptoms.find({sym_name:{$in:symlist}}).toArray(function(err,document){
+        symptoms.find({name:{$in:symlist}}).toArray(function(err,document){
         if(err){
           console.log(err);
           callback(err);
@@ -85,7 +85,7 @@ module.exports.isSymtomFilter=function (symlist,callback)
           console.log("Message from DB:symtom found for ",symlist);
           var symlist1 = [];
           document.forEach(function(data){
-            symlist1.push(data.syn_api_id);
+            symlist1.push(data.id);
           });
           callback(null,symlist1);
         }
@@ -141,6 +141,21 @@ module.exports.updateSessionVariables=function (id,data)
       diagnosis_format:data
       },{
          upsert: true });
+    }
+  });
+}
+
+module.exports.populateDBWithSymptoms=function (data)
+{
+  MongoClient.connect(url,function(err,db){
+    if(err)
+    {
+      console.log(err);
+    }
+    else
+    {
+        var symptoms = db.collection('symptoms');
+        symptoms.insert(data);
     }
   });
 }

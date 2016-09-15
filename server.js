@@ -16,6 +16,15 @@ var options = {
   },
   body:{}
   };
+  var options1 = {
+    url: 'https://api.infermedica.com/v2/symptoms',
+    method:'GET',
+    json:true,
+    headers: {
+    app_id:'f1308345',
+    app_key:'abb713ecd3ddecf6106ecf9118bfacde'
+    }
+    };
   var evi_format = {
   "id": "",
   "choice_id": "present"
@@ -26,6 +35,7 @@ var options = {
     "age": "",
     "evidence": []
   };
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', (process.env.OPENSHIFT_NODEJS_PORT || 8080));
@@ -49,11 +59,16 @@ app.post('/query',function (req,res) {
     "evidence": []
   };
   console.log("Message from client recieved and says ",req.body.key);
-  var symlist = tokenizer.tokenize(req.body.key);
+  natural.PorterStemmer.attach();
+  var symlist = req.body.key.tokenizeAndStem();
   if(!diagnosis_format['sex'])
   diagnosis_format['sex']='male';
   if(!diagnosis_format['age'])
   diagnosis_format['age']='20';
+  for(var i=0;i<symlist.length;i++)
+  {
+    symlist[i]=new RegExp(symlist[i],"i");
+  }
   console.log(symlist);
   shrtntodise.isSymtomFilter(symlist,function(err,symlist){
     if(err)
@@ -70,17 +85,23 @@ app.post('/query',function (req,res) {
       }
       options.body=diagnosis_format;
       request.post(options,function(err,responce,body){
-        if(err)
-        {
+        try{
+          if(err)
+          {
+            console.log(err);
+          }
+          if(body)
+          {
+            console.log("Body says",body)
+            res.json({key:body.question.text});
+          }
+          else {
+            res.json({key:"Some error occured while connecting to brain"});
+          }
+        }
+        catch(err){
           console.log(err);
-        }
-        if(body)
-        {
-          console.log("Body says",body)
-          res.json({key:body.question.text});
-        }
-        else {
-          res.json({key:"Some error occured while connecting to brain"});
+          res.json({key:"Some error occured while connecting to brain"})
         }
 
       });
@@ -88,7 +109,29 @@ app.post('/query',function (req,res) {
     }
 
   });
+});
 
+app.get('/fillData',function(req,res){
+
+  request.get(options1,function(err,responce,body){
+    if(err)
+    {
+      console.log(err);
+    }
+    if(body)
+    {
+      console.log("Body says",body)
+      body.forEach(function(data) {
+          shrtntodise.populateDBWithSymptoms(data);
+      });
+      res.json(body);
+    }
+    else {
+      console.log("Problem with data retrieval");
+      res.json("Problem");
+    }
+
+  });
 
 });
 app.get('/',function(req,res){
