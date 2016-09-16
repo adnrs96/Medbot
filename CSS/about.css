@@ -77,3 +77,14 @@ font-family: 'Modak', sans-serif;
 
 .button-primary:hover{
 background:lightslategrey;}
+
+
+p{
+font-color:green;
+font-family:'tahoma';
+text-align:center;
+top:80vh;
+position:absolute;
+right:0;
+left:0;
+font-family: 'Modak', sans-serif;}
