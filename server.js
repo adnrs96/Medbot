@@ -48,8 +48,8 @@ var options = {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('port', (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || process.env.MEDBOT_SERVICE_PORT || 8080));
-app.set('ip',(process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || process.env.MEDBOT_SERVICE_HOST || '127.0.0.1'));
+app.set('port', (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080));
+app.set('ip',(process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0'));
 var python_name = 'python';
 /*if(process.env.MEDBOT_SERVICE_HOST)
 {
@@ -76,62 +76,51 @@ app.post('/query',function (req,res) {
   diagnosis_format['sex']='male';
   if(!diagnosis_format['age'])
   diagnosis_format['age']='20';
-
-    options2.url += symlist[0].replace(/['"]+/g, '');
-    console.log(options2);
-    try{
-
-      request.get(options2, function(err, response, body){
-        if(err){
-          return console.log('Error:', error);
-        }
-        if(response.statusCode !== 200){
-            return console.log('Invalid Status Code Returned:', response.statusCode);
-        }
-        console.log(body[0].id);
+  for(var i=0;i<symlist.length;i++)
+  {
+    symlist[i]=new RegExp(symlist[i],"i");
+  }
+  console.log(symlist);
+  shrtntodise.isSymtomFilter(symlist,function(err,symlist){
+    if(err)
+    {
+      console.log(err);
+    }
+    else {
+      console.log(symlist);
+      for(var i=0;i<symlist.length;i++)
+      {
         var new_evi_form = evi_format;
-        new_evi_form.id=body[0].id;
+        new_evi_form.id=symlist[i];
         diagnosis_format.evidence.push(new_evi_form);
-        options.body=diagnosis_format;
-        request.post(options,function(err,responce,body){
-          try{
-            if(err)
-            {
-              console.log(err);
-            }
-            if(body)
-            {
-              var items = "Is it ";
-              console.log("Body says",body)
-              for(var i=0; i < body.question.items.length; i++){
-                if(i==0)
-                  items += body.question.items[i].name;
-                else
-                  items += " or " + body.question.items[i].name;
-              }
-              items += " ?";
-              res.json({key:body.question.text + "\n" + items});
-            }
-            else {
-              res.json({key:"Some error occured while connecting to brain"});
-            }
-          }
-          catch(err){
+      }
+      options.body=diagnosis_format;
+      request.post(options,function(err,responce,body){
+        try{
+          if(err)
+          {
             console.log(err);
-            res.json({key:"Some error occured while connecting to brain"})
           }
-
-        });
-        shrtntodise.updateSessionVariables('staticuser',diagnosis_format);
+          if(body)
+          {
+            console.log("Body says",body)
+            res.json({key:body.question.text});
+          }
+          else {
+            res.json({key:"Some error occured while connecting to brain"});
+          }
+        }
+        catch(err){
+          console.log(err);
+          res.json({key:"Some error occured while connecting to brain"})
+        }
 
       });
+      shrtntodise.updateSessionVariables('staticuser',diagnosis_format);
+    }
 
-    }
-    catch(err){
-      console.log(err);
-      res.json({key:"Some error occured while connecting to brain"})
-    }
   });
+});
 
 app.get('/fillData',function(req,res){
 
