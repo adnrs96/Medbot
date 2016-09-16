@@ -48,8 +48,8 @@ var options = {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('port', (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || process.env.MEDBOT_SERVICE_PORT || 8080));
-app.set('ip',(process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || process.env.MEDBOT_SERVICE_HOST || '127.0.0.1'));
+app.set('port', (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080));
+app.set('ip',(process.env.IP   || process.env.OPENSHIFT_NODEJS_IP  || '127.0.0.1'));
 var python_name = 'python';
 /*if(process.env.MEDBOT_SERVICE_HOST)
 {
