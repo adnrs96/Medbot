@@ -38,13 +38,13 @@ var options = {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('port', (process.env.OPENSHIFT_NODEJS_PORT || 8080));
-app.set('ip',(process.env.MEDBOT_SERVICE_HOST || '127.0.0.1'));
+app.set('port', (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080));
+app.set('ip',(process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'));
 var python_name = 'python';
-if(process.env.MEDBOT_SERVICE_HOST)
+/*if(process.env.MEDBOT_SERVICE_HOST)
 {
   python_name='/var/lib/openshift/57c2ff777628e1c6210000af/app-root/data/bin/python';
-}
+}*/
 app.use(express.static(__dirname +'/CSS'));
 app.use(express.static(__dirname +'/JS'));
 app.use(express.static(__dirname +'/SCSS'));
