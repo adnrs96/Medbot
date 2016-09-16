@@ -6,6 +6,7 @@ tokenizer = new natural.WordTokenizer();
 var shrtntodise = require("./modules/sympt2dise.js");
 var app = express(),data1 = [1,2,3,4,5,6,7,8,9];
 var request = require('request');
+var buffer = '';
 var options = {
   url: 'https://api.infermedica.com/v2/diagnosis',
   method:'POST',
@@ -25,6 +26,15 @@ var options = {
     app_key:'abb713ecd3ddecf6106ecf9118bfacde'
     }
     };
+    var options2 = {
+      url: 'https://api.infermedica.com/v2/search?phrase=',
+      method:'GET',
+      json:true,
+      headers: {
+      app_id:'f1308345',
+      app_key:'abb713ecd3ddecf6106ecf9118bfacde'
+      }
+      };
   var evi_format = {
   "id": "",
   "choice_id": "present"
@@ -65,24 +75,20 @@ app.post('/query',function (req,res) {
   diagnosis_format['sex']='male';
   if(!diagnosis_format['age'])
   diagnosis_format['age']='20';
-  for(var i=0;i<symlist.length;i++)
-  {
-    symlist[i]=new RegExp(symlist[i],"i");
-  }
-  console.log(symlist);
-  shrtntodise.isSymtomFilter(symlist,function(err,symlist){
-    if(err)
-    {
-      console.log(err);
-    }
-    else {
-      console.log(symlist);
-      for(var i=0;i<symlist.length;i++)
-      {
-        var new_evi_form = evi_format;
-        new_evi_form.id=symlist[i];
-        diagnosis_format.evidence.push(new_evi_form);
+
+    options2.url += symlist[0].replace(/['"]+/g, '');
+    console.log(options2);
+    request.get(options2, function(err, response, body){
+      if(err){
+        return console.log('Error:', error);
       }
+      if(response.statusCode !== 200){
+          return console.log('Invalid Status Code Returned:', response.statusCode);
+      }
+      console.log(body[0].id);
+      var new_evi_form = evi_format;
+      new_evi_form.id=body[0].id;
+      diagnosis_format.evidence.push(new_evi_form);
       options.body=diagnosis_format;
       request.post(options,function(err,responce,body){
         try{
@@ -92,8 +98,16 @@ app.post('/query',function (req,res) {
           }
           if(body)
           {
+            var items = "Is it ";
             console.log("Body says",body)
-            res.json({key:body.question.text});
+            for(var i=0; i < body.question.items.length; i++){
+              if(i==0)
+                items += body.question.items[i].name;
+              else
+                items += " or " + body.question.items[i].name;
+            }
+            items += " ?";
+            res.json({key:body.question.text + "\n" + items});
           }
           else {
             res.json({key:"Some error occured while connecting to brain"});
@@ -106,10 +120,8 @@ app.post('/query',function (req,res) {
 
       });
       shrtntodise.updateSessionVariables('staticuser',diagnosis_format);
-    }
 
-  });
-});
+    });
 
 app.get('/fillData',function(req,res){
 
