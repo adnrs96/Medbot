@@ -58,6 +58,7 @@ var python_name = 'python';
 app.use(express.static(__dirname +'/CSS'));
 app.use(express.static(__dirname +'/JS'));
 app.use(express.static(__dirname +'/SCSS'));
+app.use(express.static(__dirname +'/views'));
 app.use(express.static(__dirname +'/images'));
 app.post('/query',function (req,res) {
 
@@ -78,50 +79,59 @@ app.post('/query',function (req,res) {
 
     options2.url += symlist[0].replace(/['"]+/g, '');
     console.log(options2);
-    request.get(options2, function(err, response, body){
-      if(err){
-        return console.log('Error:', error);
-      }
-      if(response.statusCode !== 200){
-          return console.log('Invalid Status Code Returned:', response.statusCode);
-      }
-      console.log(body[0].id);
-      var new_evi_form = evi_format;
-      new_evi_form.id=body[0].id;
-      diagnosis_format.evidence.push(new_evi_form);
-      options.body=diagnosis_format;
-      request.post(options,function(err,responce,body){
-        try{
-          if(err)
-          {
-            console.log(err);
-          }
-          if(body)
-          {
-            var items = "Is it ";
-            console.log("Body says",body)
-            for(var i=0; i < body.question.items.length; i++){
-              if(i==0)
-                items += body.question.items[i].name;
-              else
-                items += " or " + body.question.items[i].name;
+    try{
+
+      request.get(options2, function(err, response, body){
+        if(err){
+          return console.log('Error:', error);
+        }
+        if(response.statusCode !== 200){
+            return console.log('Invalid Status Code Returned:', response.statusCode);
+        }
+        console.log(body[0].id);
+        var new_evi_form = evi_format;
+        new_evi_form.id=body[0].id;
+        diagnosis_format.evidence.push(new_evi_form);
+        options.body=diagnosis_format;
+        request.post(options,function(err,responce,body){
+          try{
+            if(err)
+            {
+              console.log(err);
             }
-            items += " ?";
-            res.json({key:body.question.text + "\n" + items});
+            if(body)
+            {
+              var items = "Is it ";
+              console.log("Body says",body)
+              for(var i=0; i < body.question.items.length; i++){
+                if(i==0)
+                  items += body.question.items[i].name;
+                else
+                  items += " or " + body.question.items[i].name;
+              }
+              items += " ?";
+              res.json({key:body.question.text + "\n" + items});
+            }
+            else {
+              res.json({key:"Some error occured while connecting to brain"});
+            }
           }
-          else {
-            res.json({key:"Some error occured while connecting to brain"});
+          catch(err){
+            console.log(err);
+            res.json({key:"Some error occured while connecting to brain"})
           }
-        }
-        catch(err){
-          console.log(err);
-          res.json({key:"Some error occured while connecting to brain"})
-        }
+
+        });
+        shrtntodise.updateSessionVariables('staticuser',diagnosis_format);
 
       });
-      shrtntodise.updateSessionVariables('staticuser',diagnosis_format);
 
-    });
+    }
+    catch(err){
+      console.log(err);
+      res.json({key:"Some error occured while connecting to brain"})
+    }
+  });
 
 app.get('/fillData',function(req,res){
 

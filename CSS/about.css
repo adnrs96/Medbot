@@ -1,0 +1,79 @@
+*{
+margin:0;
+padding:0;
+
+}
+
+@import 'https://fonts.googleapis.com/css?family=Modak';
+
+
+#imgcontainer img{
+width:100%;
+height:100vh;
+opacity:0.6;}
+
+h1{
+text-align:center;
+font-family:'Lucida Console';
+font-style:italic;
+color:#af111c;
+position:absolute;
+
+top:30vh;
+right:0;
+left:0;
+font-family: 'Modak', sans-serif;
+
+
+}
+
+h3{
+text-align:center;
+font-family:'Lucida console';
+color:#af111c;
+text-size:25;
+position:absolute;
+top:50vh;
+right:0;
+left:0;
+font-family: 'Modak', sans-serif;
+
+}
+
+
+
+.button{
+width:200px;
+height:100px;
+top:60vh;
+position:absolute;
+left:0;
+right:0;
+margin-left:auto;
+margin-right:auto;
+display:inline-block;
+text-decoration:none;
+font-family: 'Modak', sans-serif;
+
+
+}
+
+
+.button-primary{
+float:left;
+padding:10px 50px;
+border-radius:10px;
+overflow:hidden;
+box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+background:#6699CC;
+font:20px "Trebuchet MS", sans-serif;
+color:#fff;
+text-decoration: none;
+font-family: 'Modak', sans-serif;
+
+
+}
+
+
+.button-primary:hover{
+background:lightslategrey;}
