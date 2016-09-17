@@ -8,6 +8,9 @@ var shrtntodise = require("./modules/sympt2dise.js");
 var app = express(),data1 = [1,2,3,4,5,6,7,8,9];
 var request = require('request');
 app.use(cookieParser());
+var maletest = /male/i;
+var femaletest = /female/i;
+var agetest = /ageis/i;
 var buffer = '';
 var options = {
   url: 'https://api.infermedica.com/v2/diagnosis',
@@ -88,8 +91,19 @@ app.post('/query',function (req,res) {
    else {
     shrtntodise.restoreSessionVariables(id,function(sess) {
       console.log(sess);
-       session_data=sess;
-       api_handler(id,req,res,session_data);
+      if(sess==null)
+      {
+        shrtntodise.updateSessionVariables(null,session_data,function(idr){
+          res.cookie('id',JSON.stringify(idr));
+          id=idr;
+          console.log("ID assignment :",idr);
+          api_handler(id,req,res,session_data);
+        });
+      }
+      else {
+        session_data=sess;
+        api_handler(id,req,res,session_data);  
+      }
      });
    }
 
@@ -130,71 +144,119 @@ app.listen(app.get('port'), app.get('ip'), function() {
 function api_handler(id,req,res,session_data) {
 
   diagnosis_format = session_data.diagnosis_format;
+
   if(!diagnosis_format)
   {
-    session_data.last_question=''
+    session_data.last_question='hi ';
+    session_data.sexf=false;
+    session_data.agef=false;
       diagnosis_format= {
       "sex": "",
       "age": "",
       "evidence": []
     };
   }
-  /*if(session_data.last_question)
-  {
-
-  }*/
+  console.log(session_data);
   console.log("Message from client recieved and says ",req.body.key);
   natural.PorterStemmer.attach();
-  var symlist = req.body.key.tokenizeAndStem();
-  if(!diagnosis_format['sex'])
-  diagnosis_format['sex']='male';
-  if(!diagnosis_format['age'])
-  diagnosis_format['age']='20';
-  for(var i=0;i<symlist.length;i++)
+  if(maletest.test(req.body.key))
   {
-    symlist[i]=new RegExp(symlist[i],"i");
+    diagnosis_format['sex']='male';
   }
-  console.log(symlist);
-  shrtntodise.isSymtomFilter(symlist,function(err,symlist){
-    if(err)
+  if(femaletest.test(req.body.key))
+  {
+    diagnosis_format['sex']='female';
+  }
+
+   if(agetest.test(req.body.key))
+  {
+    var ageed = req.body.key.split('ageis')[1].split(' ')[0];
+    diagnosis_format['age']=ageed;
+    session_data.diagnosis_format=diagnosis_format;
+    shrtntodise.updateSessionVariables(id,session_data);
+    res.json({key:"Fine lets begin your diagnosis"});
+  }
+  else {
+
+    var symlist = req.body.key.tokenizeAndStem();
+    console.log("Here:",diagnosis_format['sex']);
+    session_data.diagnosis_format=diagnosis_format;
+    console.log(session_data);
+    if(diagnosis_format['sex']=='')
     {
-      console.log(err);
+      if(session_data['sexf'])
+      {
+        res.json({key:"I am sorry but i need that information"});
+        shrtntodise.updateSessionVariables(id,session_data);
+      }
+      else {
+        res.json({key:"Could you let me know your sex enter as 'male' or 'female'"});
+        session_data['sexf']=1;
+        shrtntodise.updateSessionVariables(id,session_data);
+      }
+    }
+    else if(diagnosis_format['age']=='')
+    {
+      if(session_data['agef'])
+      {
+        res.json({key:"I am sorry but i need that information"});
+        shrtntodise.updateSessionVariables(id,session_data);
+      }
+      else {
+        res.json({key:"Could you let me know your Age Please text me in following way So if you age is say 29 then send Ageis29 "});
+        session_data['agef']=1;
+        shrtntodise.updateSessionVariables(id,session_data);
+      }
     }
     else {
-      console.log(symlist);
+
       for(var i=0;i<symlist.length;i++)
       {
-        var new_evi_form = evi_format;
-        new_evi_form.id=symlist[i];
-        diagnosis_format.evidence.push(new_evi_form);
+        symlist[i]=new RegExp(symlist[i],"i");
       }
-      options.body=diagnosis_format;
-      request.post(options,function(err,responce,body){
-        try{
-          if(err)
-          {
-            console.log(err);
-          }
-          if(body)
-          {
-            console.log("Body says",body)
-            res.json({key:body.question.text});
-          }
-          else {
-            res.json({key:"Some error occured while connecting to brain"});
-          }
-        }
-        catch(err){
+      console.log(symlist);
+      shrtntodise.isSymtomFilter(symlist,function(err,symlist){
+        if(err)
+        {
           console.log(err);
-          res.json({key:"Some error occured while connecting to brain"})
+        }
+        else {
+          console.log(symlist);
+          for(var i=0;i<symlist.length;i++)
+          {
+            var new_evi_form = evi_format;
+            new_evi_form.id=symlist[i];
+            diagnosis_format.evidence.push(new_evi_form);
+          }
+          options.body=diagnosis_format;
+          request.post(options,function(err,responce,body){
+            try{
+              if(err)
+              {
+                console.log(err);
+              }
+              if(body)
+              {
+                console.log("Body says",body)
+                res.json({key:body.question.text});
+              }
+              else {
+                res.json({key:"Some error occured while connecting to brain"});
+              }
+            }
+            catch(err){
+              console.log(err);
+              res.json({key:"Some error occured while connecting to brain"});
+            }
+
+          });
+          session_data.diagnosis_format=diagnosis_format;
+          shrtntodise.updateSessionVariables(id,session_data);
         }
 
       });
-
-      shrtntodise.updateSessionVariables(id,session_data);
-    }
-
-  });
+  }
+}
 }
 /*
 
