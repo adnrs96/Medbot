@@ -4,7 +4,7 @@ padding:0;
 
 }
 
-@import 'https://fonts.googleapis.com/css?family=Modak';
+
 
 
 #imgcontainer img{
@@ -14,15 +14,15 @@ opacity:0.6;}
 
 h1{
 text-align:center;
-font-family:'Lucida Console';
 font-style:italic;
 color:#af111c;
+font-size:50px;
 position:absolute;
-
 top:30vh;
 right:0;
 left:0;
-font-family: 'Modak', sans-serif;
+font-family: 'Baloo Bhaina', sans-serif;
+    text-shadow:0 5px 10px rgba(0, 0, 0, 0.2);
 
 
 }
@@ -36,7 +36,7 @@ position:absolute;
 top:50vh;
 right:0;
 left:0;
-font-family: 'Modak', sans-serif;
+font-family: 'Baloo Bhaina', sans-serif;
 
 }
 
@@ -47,21 +47,32 @@ width:200px;
 height:100px;
 top:60vh;
 position:absolute;
-left:0;
+left:20%;
 right:0;
 margin-left:auto;
 margin-right:auto;
 display:inline-block;
 text-decoration:none;
-font-family: 'Modak', sans-serif;
-
-
+font-family: 'satisfy', sans-serif;
 }
-
+.button-2
+{
+width:200px;
+height:100px;
+top:60vh;
+position:absolute;
+left:0;
+right:20%;
+margin-left:auto;
+margin-right:auto;
+display:inline-block;
+text-decoration:none;
+font-family: 'satisfy', sans-serif;
+}
 
 .button-primary{
 float:left;
-padding:10px 50px;
+padding:10px 20px 15px 20px;
 border-radius:10px;
 overflow:hidden;
 box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
@@ -69,7 +80,7 @@ background:#6699CC;
 font:20px "Trebuchet MS", sans-serif;
 color:#fff;
 text-decoration: none;
-font-family: 'Modak', sans-serif;
+font-family: 'satisfy', sans-serif;
 
 
 }
@@ -80,11 +91,11 @@ background:lightslategrey;}
 
 
 p{
-font-color:green;
+color:green;
 font-family:'tahoma';
 text-align:center;
 top:80vh;
 position:absolute;
 right:0;
 left:0;
-font-family: 'Modak', sans-serif;}
+font-family: 'satisfy', sans-serif;}
