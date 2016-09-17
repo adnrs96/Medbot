@@ -4,7 +4,7 @@ padding:0;
 
 }
 
-@import 'https://fonts.googleapis.com/css?family=Modak';
+
 
 
 #imgcontainer img{
@@ -14,7 +14,6 @@ opacity:0.6;}
 
 h1{
 text-align:center;
-font-family:'Lucida Console';
 font-style:italic;
 color:#af111c;
 position:absolute;
@@ -22,7 +21,7 @@ position:absolute;
 top:30vh;
 right:0;
 left:0;
-font-family: 'satisfy', sans-serif;
+font-family: 'Baloo Bhaina', sans-serif;
 
 
 }
