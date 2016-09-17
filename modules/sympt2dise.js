@@ -3,7 +3,7 @@ module.exports = {};
   var mongo = require('mongodb');
   var MongoClient = mongo.MongoClient;
   var url ="mongodb://medbot:paank@ds029466.mlab.com:29466/medbot";//process.env.OPENSHIFT_MONGO_URL;
-
+  var ObjectId = require('mongodb').ObjectID;
   module.exports.shortdowntodiseaselist= function (symlist,callback)
   {
       MongoClient.connect(url,function(err,db){
@@ -16,7 +16,7 @@ module.exports = {};
         {
           var symptoms = db.collection('symptoms');
           console.log("SymList "+symlist);
-          symptoms.find({name:{$in:symlist}}).toArray(function(err,document){
+          symptoms.find({name:{$in:symlist},parent_id:"null"}).toArray(function(err,document){
             //console.log("Doc"+document.length);
             var disList = [];
                 if(err){
@@ -94,7 +94,7 @@ module.exports.isSymtomFilter=function (symlist,callback)
   });
 }
 
-module.exports.restoreSessionVariables=function (id)
+module.exports.restoreSessionVariables=function (id,callback)
 {
   MongoClient.connect(url,function(err,db){
     if(err)
@@ -105,27 +105,28 @@ module.exports.restoreSessionVariables=function (id)
     else
     {
       var users = db.collection('users');
-      users.find({_id:id}).toArray(function(err,document){
+      users.find({_id:ObjectId(id)}).toArray(function(err,document){
       if(err){
         console.log(err);
         db.close();
-        return null;
+        callback(null);
       }
       else if(document.length<=0)
       {
         db.close();
-        return null;
+        callback(null);
       }
       else {
         db.close();
-        return document.diagnosis_format;
+        console.log(document);
+        callback(document[0].session_data);
       }
       });
     }
   });
 }
 
-module.exports.updateSessionVariables=function (id,data)
+module.exports.updateSessionVariables=function (id,data,callback)
 {
   MongoClient.connect(url,function(err,db){
     if(err)
@@ -136,11 +137,27 @@ module.exports.updateSessionVariables=function (id,data)
     else
     {
       var users = db.collection('users');
-      users.update({_id:id},{
-      _id:id,
-      diagnosis_format:data
-      },{
-         upsert: true });
+      if(id==null)
+      {
+        users.insert({
+        session_data:data
+      },function (err,doc) {
+        if(err)
+        console.log(err);
+        else {
+          console.log(doc);
+          callback(doc.insertedIds[0]);
+        }
+      });
+      }
+      else {
+        users.update({_id:ObjectId(id)},{
+        _id:id,
+        session_data:data
+        },{
+           upsert: true });
+      }
+
     }
   });
 }

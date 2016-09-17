@@ -1,4 +1,5 @@
 var express = require('express');
+var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var spawn = require('child_process').spawn;
 var natural = require('natural');
@@ -6,6 +7,7 @@ tokenizer = new natural.WordTokenizer();
 var shrtntodise = require("./modules/sympt2dise.js");
 var app = express(),data1 = [1,2,3,4,5,6,7,8,9];
 var request = require('request');
+app.use(cookieParser());
 var buffer = '';
 var options = {
   url: 'https://api.infermedica.com/v2/diagnosis',
@@ -60,15 +62,87 @@ app.use(express.static(__dirname +'/JS'));
 app.use(express.static(__dirname +'/SCSS'));
 app.use(express.static(__dirname +'/views'));
 app.use(express.static(__dirname +'/images'));
-app.post('/query',function (req,res) {
 
-  diagnosis_format = shrtntodise.restoreSessionVariables('staticuser');
+
+app.post('/query',function (req,res) {
+   var id = req.cookies.id;
+   console.log("User id :",id);
+   try{
+  	id=JSON.parse(id);
+  	}
+  	catch(e)
+  	{
+  		console.log(e);
+  	}
+   var session_data = {};
+   session_data.diagnosis_format=diagnosis_format;
+   if(id==undefined)
+   {
+     shrtntodise.updateSessionVariables(null,session_data,function(idr){
+       res.cookie('id',JSON.stringify(idr));
+       id=idr;
+       console.log("ID assignment :",idr);
+       api_handler(id,req,res,session_data);
+     });
+   }
+   else {
+    shrtntodise.restoreSessionVariables(id,function(sess) {
+      console.log(sess);
+       session_data=sess;
+       api_handler(id,req,res,session_data);
+     });
+   }
+
+});
+
+app.get('/fillData',function(req,res){
+
+  request.get(options1,function(err,responce,body){
+    if(err)
+    {
+      console.log(err);
+    }
+    if(body)
+    {
+      console.log("Body says",body)
+      body.forEach(function(data) {
+          shrtntodise.populateDBWithSymptoms(data);
+      });
+      res.json(body);
+    }
+    else {
+      console.log("Problem with data retrieval");
+      res.json("Problem");
+    }
+
+  });
+
+});
+app.get('/',function(req,res){
+	res.sendFile(__dirname+'/views/index.html');
+});
+
+app.listen(app.get('port'), app.get('ip'), function() {
+  console.log('Node app is running on port', app.get('port'),'On ip ',app.get('ip'));
+});
+
+
+function api_handler(id,req,res,session_data) {
+
+  diagnosis_format = session_data.diagnosis_format;
   if(!diagnosis_format)
-  diagnosis_format= {
-    "sex": "",
-    "age": "",
-    "evidence": []
-  };
+  {
+    session_data.last_question=''
+      diagnosis_format= {
+      "sex": "",
+      "age": "",
+      "evidence": []
+    };
+  }
+  /*if(session_data.last_question)
+  {
+
+  }*/
   console.log("Message from client recieved and says ",req.body.key);
   natural.PorterStemmer.attach();
   var symlist = req.body.key.tokenizeAndStem();
@@ -116,42 +190,12 @@ app.post('/query',function (req,res) {
         }
 
       });
-      shrtntodise.updateSessionVariables('staticuser',diagnosis_format);
+
+      shrtntodise.updateSessionVariables(id,session_data);
     }
 
   });
-});
-
-app.get('/fillData',function(req,res){
-
-  request.get(options1,function(err,responce,body){
-    if(err)
-    {
-      console.log(err);
-    }
-    if(body)
-    {
-      console.log("Body says",body)
-      body.forEach(function(data) {
-          shrtntodise.populateDBWithSymptoms(data);
-      });
-      res.json(body);
-    }
-    else {
-      console.log("Problem with data retrieval");
-      res.json("Problem");
-    }
-
-  });
-
-});
-app.get('/',function(req,res){
-	res.sendFile(__dirname+'/views/index.html');
-});
-
-app.listen(app.get('port'), app.get('ip'), function() {
-  console.log('Node app is running on port', app.get('port'),'On ip ',app.get('ip'));
-});
+}
 /*
 
 shrtntodise.shortdowntodiseaselist(symlist,function(err,disList){
