@@ -6,9 +6,9 @@ tokenizer = new natural.WordTokenizer();
 var shrtntodise = require("./modules/sympt2dise.js");
 var app = express(),data1 = [1,2,3,4,5,6,7,8,9];
 var request = require('request');
-var py = spawn('python3',['temp.py'])
 
-var apidata = ""
+
+var apidata = "";
 /*var options = {
   url: 'https://api.infermedica.com/v2/diagnosis',
   method:'POST',
@@ -71,6 +71,7 @@ app.post('/query',function (req,res) {
     "age": "",
     "evidence": []
   };*/
+  var py = spawn('python3',['temp.py']);
   console.log("Message from client recieved and says ",req.body.key);
 
   py.stdout.on('data', function(data){
