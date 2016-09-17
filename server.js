@@ -75,7 +75,6 @@ app.post('/query',function (req,res) {
 
   py.stdout.on('data', function(data){
     apidata += data.toString();
-    py.stdin.write(req.body.key)
     //console.log(apidata);
   });
 
@@ -84,6 +83,10 @@ app.post('/query',function (req,res) {
     console.log(apidata);
     res.json({key:apidata});
   });
+
+
+  py.stdin.write(req.body.key);
+  py.stdin.end();
 
 
 //  py.stdin.write(req.body.key, function(err){
