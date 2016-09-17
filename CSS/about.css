@@ -16,11 +16,13 @@ h1{
 text-align:center;
 font-style:italic;
 color:#af111c;
+font-size:50px;
 position:absolute;
 top:30vh;
 right:0;
 left:0;
 font-family: 'Baloo Bhaina', sans-serif;
+    text-shadow:0 5px 10px rgba(0, 0, 0, 0.2);
 
 
 }
