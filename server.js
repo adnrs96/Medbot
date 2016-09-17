@@ -88,12 +88,6 @@ app.post('/query',function (req,res) {
   py.stdin.write(req.body.key);
   py.stdin.end();
 
-
-//  py.stdin.write(req.body.key, function(err){
-//    py.stdin.end();
-//  });
-
-
 });
 
 app.get('/fillData',function(req,res){
