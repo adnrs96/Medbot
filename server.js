@@ -82,7 +82,6 @@ app.post('/query',function (req,res) {
    	}
     var session_data = {};
     session_data.diagnosis_format=diagnosis_format;
-    session_data.qtype=0;
     shrtntodise.updateSessionVariables(null,session_data,function(idr){
       res.cookie('id',JSON.stringify(idr));
       id=idr;
@@ -103,7 +102,6 @@ app.post('/query',function (req,res) {
    	}
     var session_data = {};
     session_data.diagnosis_format=diagnosis_format;
-    session_data.qtype=0;
     if(id==undefined)
     {
       shrtntodise.updateSessionVariables(null,session_data,function(idr){
@@ -301,7 +299,7 @@ function api_handler(id,req,res,session_data) {
                 }
               }
               else {
-                res.json({key:"Some error occured while connecting to brain"});
+                res.json({key:"Sorry but i do not understand that Try something else"});
               }
             }
             catch(err){
