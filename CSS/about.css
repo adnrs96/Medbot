@@ -71,6 +71,7 @@ font-family: 'satisfy', sans-serif;
 }
 
 .button-primary{
+cursor: pointer; cursor: hand;
 float:left;
 padding:10px 20px 15px 20px;
 border-radius:10px;
