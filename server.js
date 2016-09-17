@@ -11,7 +11,7 @@ app.use(cookieParser());
 var maletest = /male/i;
 var femaletest = /female/i;
 var agetest = /ageis/i;
-var clearcook = /start new/i;
+var clearcook = /startnew/i;
 var buffer = '';
 var options = {
   url: 'https://api.infermedica.com/v2/diagnosis',
@@ -262,8 +262,9 @@ function api_handler(id,req,res,session_data) {
               if(body)
               {
                 console.log("Body says",body);
+                if(session_data.qtype)
                 console.log(session_data.qtype.text,"  :  ",body.question.text);
-                if(session_data.qtype.text==body.question.text)
+                if(session_data.qtype && session_data.qtype.text==body.question.text)
                 {
                   var customresponce = '';
                   session_data.qtype=body.question;
@@ -306,10 +307,10 @@ function api_handler(id,req,res,session_data) {
               console.log(err);
               res.json({key:"Some error occured while connecting to brain"});
             }
-
+            session_data.diagnosis_format=diagnosis_format;
+            shrtntodise.updateSessionVariables(id,session_data);
           });
-          session_data.diagnosis_format=diagnosis_format;
-          shrtntodise.updateSessionVariables(id,session_data);
+
         }
 
       });
