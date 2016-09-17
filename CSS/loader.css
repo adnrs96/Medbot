@@ -67,13 +67,9 @@
     opacity: .1;
   }
 }
-body {
-  display: flex;
-  padding: 50px;
-  box-sizing: border-box;
-  background: radial-gradient(#1f3a47, #0b1114);
-}
+
 
 html, body {
   height: 100%;
 }
+
