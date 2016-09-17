@@ -139,23 +139,26 @@ module.exports.updateSessionVariables=function (id,data,callback)
       var users = db.collection('users');
       if(id==null)
       {
-        users.insert({
-        session_data:data
-      },function (err,doc) {
-        if(err)
-        console.log(err);
-        else {
-          console.log(doc);
-          callback(doc.insertedIds[0]);
-        }
-      });
+            users.insert({
+            session_data:data
+          },function (err,doc) {
+            if(err)
+            console.log(err);
+            else {
+              console.log(doc);
+              callback(doc.insertedIds[0]);
+            }
+          });
       }
       else {
-        users.update({_id:ObjectId(id)},{
-        _id:id,
-        session_data:data
-        },{
-           upsert: true });
+          users.update({_id:ObjectId(id)},{
+          _id:ObjectId(id),
+          session_data:data
+          },function (err,doc) {
+            if(err)
+            console.log(err);
+
+          });
       }
 
     }
