@@ -11,6 +11,7 @@ app.use(cookieParser());
 var maletest = /male/i;
 var femaletest = /female/i;
 var agetest = /ageis/i;
+var clearcook = /start new/i;
 var buffer = '';
 var options = {
   url: 'https://api.infermedica.com/v2/diagnosis',
@@ -68,44 +69,70 @@ app.use(express.static(__dirname +'/images'));
 
 
 app.post('/query',function (req,res) {
-   var id = req.cookies.id;
-   console.log("User id :",id);
-   try{
-  	id=JSON.parse(id);
-  	}
-  	catch(e)
-  	{
-  		console.log(e);
-  	}
-   var session_data = {};
-   session_data.diagnosis_format=diagnosis_format;
-   if(id==undefined)
-   {
-     shrtntodise.updateSessionVariables(null,session_data,function(idr){
-       res.cookie('id',JSON.stringify(idr));
-       id=idr;
-       console.log("ID assignment :",idr);
-       api_handler(id,req,res,session_data);
-     });
-   }
-   else {
-    shrtntodise.restoreSessionVariables(id,function(sess) {
-      console.log(sess);
-      if(sess==null)
-      {
-        shrtntodise.updateSessionVariables(null,session_data,function(idr){
-          res.cookie('id',JSON.stringify(idr));
-          id=idr;
-          console.log("ID assignment :",idr);
-          api_handler(id,req,res,session_data);
-        });
-      }
-      else {
-        session_data=sess;
-        api_handler(id,req,res,session_data);  
-      }
-     });
-   }
+  if(clearcook.test(req.body.key))
+  {
+    var id = req.cookies.id;
+    console.log("User id :",id);
+    try{
+   	id=JSON.parse(id);
+   	}
+   	catch(e)
+   	{
+   		console.log(e);
+   	}
+    var session_data = {};
+    session_data.diagnosis_format=diagnosis_format;
+    session_data.qtype=0;
+    shrtntodise.updateSessionVariables(null,session_data,function(idr){
+      res.cookie('id',JSON.stringify(idr));
+      id=idr;
+      console.log("ID assignment :",idr);
+      api_handler(id,req,res,session_data);
+    });
+  }
+  else {
+
+    var id = req.cookies.id;
+    console.log("User id :",id);
+    try{
+   	id=JSON.parse(id);
+   	}
+   	catch(e)
+   	{
+   		console.log(e);
+   	}
+    var session_data = {};
+    session_data.diagnosis_format=diagnosis_format;
+    session_data.qtype=0;
+    if(id==undefined)
+    {
+      shrtntodise.updateSessionVariables(null,session_data,function(idr){
+        res.cookie('id',JSON.stringify(idr));
+        id=idr;
+        console.log("ID assignment :",idr);
+        api_handler(id,req,res,session_data);
+      });
+    }
+    else {
+     shrtntodise.restoreSessionVariables(id,function(sess) {
+       console.log(sess);
+       if(sess==null)
+       {
+         shrtntodise.updateSessionVariables(null,session_data,function(idr){
+           res.cookie('id',JSON.stringify(idr));
+           id=idr;
+           console.log("ID assignment :",idr);
+           api_handler(id,req,res,session_data);
+         });
+       }
+       else {
+         session_data=sess;
+         api_handler(id,req,res,session_data);
+       }
+      });
+    }
+  }
+
 
 });
 
@@ -147,7 +174,6 @@ function api_handler(id,req,res,session_data) {
 
   if(!diagnosis_format)
   {
-    session_data.last_question='hi ';
     session_data.sexf=false;
     session_data.agef=false;
       diagnosis_format= {
@@ -237,8 +263,42 @@ function api_handler(id,req,res,session_data) {
               }
               if(body)
               {
-                console.log("Body says",body)
-                res.json({key:body.question.text});
+                console.log("Body says",body);
+                console.log(session_data.qtype.text,"  :  ",body.question.text);
+                if(session_data.qtype.text==body.question.text)
+                {
+                  var customresponce = '';
+                  session_data.qtype=body.question;
+                  if(body.conditions.length>0)
+                  {
+                    customresponce='You could be suffering from following conditions<br>';
+                    for(var i=0;i<body.conditions.length;i++)
+                    {
+                      customresponce+=body.conditions[i].name+'<br>';
+                    }
+                  }
+                  else {
+                    customresponce = 'Can you describe more about your condition<br>Let me give you some symptoms you might wanna tell about<br>'+body.question.text;
+                    if(body.question.items.length)
+                    customresponce+='<br> Could you specify from below symptoms if any is present<br>';
+                    for(var i=0;i<body.question.items.length;i++)
+                    {
+                      customresponce+=body.question.items[i].name+'<br>';
+                    }
+                  }
+                  res.json({key:customresponce});
+                }
+                else {
+                  var customresponce = body.question.text;
+                  if(body.question.items.length)
+                  customresponce+='<br> Could you specify from below symptoms if any is present<br>';
+                  for(var i=0;i<body.question.items.length;i++)
+                  {
+                    customresponce+=body.question.items[i].name+'<br>';
+                  }
+                  res.json({key:customresponce});
+                  session_data.qtype=body.question;
+                }
               }
               else {
                 res.json({key:"Some error occured while connecting to brain"});
@@ -258,20 +318,8 @@ function api_handler(id,req,res,session_data) {
   }
 }
 }
+
 /*
-
-shrtntodise.shortdowntodiseaselist(symlist,function(err,disList){
-  if(err)
-  {
-    console.log(err);
-  }
-  else {
-  console.log("Got you"+disList);
-  }
-
-});
-
----------------------
 var py    = spawn(python_name, ['nlpserver.py']);
 var nlpdata='';
 py.stdout.on('data', function(data){
