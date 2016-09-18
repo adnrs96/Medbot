@@ -154,10 +154,9 @@ module.exports.updateSessionVariables=function (id,data,callback)
           users.update({_id:ObjectId(id)},{
           _id:ObjectId(id),
           session_data:data
-          },function (err,doc) {
+        },{ upsert: true },function (err,doc) {
             if(err)
             console.log(err);
-
           });
       }
 

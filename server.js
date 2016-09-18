@@ -66,9 +66,14 @@ app.use(express.static(__dirname +'/JS'));
 app.use(express.static(__dirname +'/SCSS'));
 app.use(express.static(__dirname +'/views'));
 app.use(express.static(__dirname +'/images'));
-
+var session_data = {};
 
 app.post('/query',function (req,res) {
+  diagnosis_format = {
+    "sex": "",
+    "age": "",
+    "evidence": []
+  };
   if(clearcook.test(req.body.key))
   {
     var id = req.cookies.id;
@@ -80,7 +85,7 @@ app.post('/query',function (req,res) {
    	{
    		console.log(e);
    	}
-    var session_data = {};
+    session_data = {};
     session_data.diagnosis_format=diagnosis_format;
     shrtntodise.updateSessionVariables(null,session_data,function(idr){
       res.cookie('id',JSON.stringify(idr));
@@ -99,8 +104,8 @@ app.post('/query',function (req,res) {
    	catch(e)
    	{
    		console.log(e);
-   	}
-    var session_data = {};
+    }
+    session_data = {};
     session_data.diagnosis_format=diagnosis_format;
     if(id==undefined)
     {
