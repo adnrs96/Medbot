@@ -45,13 +45,6 @@ var options = {
   "id": "",
   "choice_id": "present"
   };
-
-  var diagnosis_format = {
-    "sex": "",
-    "age": "",
-    "evidence": []
-  };
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080));
@@ -69,7 +62,7 @@ app.use(express.static(__dirname +'/images'));
 var session_data = {};
 
 app.post('/query',function (req,res) {
-  diagnosis_format = {
+  var diagnosis_format = {
     "sex": "",
     "age": "",
     "evidence": []
@@ -91,7 +84,7 @@ app.post('/query',function (req,res) {
       res.cookie('id',JSON.stringify(idr));
       id=idr;
       console.log("ID assignment :",idr);
-      api_handler(id,req,res,session_data);
+      api_handler(id,req,res,session_data,diagnosis_format);
     });
   }
   else {
@@ -113,7 +106,7 @@ app.post('/query',function (req,res) {
         res.cookie('id',JSON.stringify(idr));
         id=idr;
         console.log("ID assignment :",idr);
-        api_handler(id,req,res,session_data);
+        api_handler(id,req,res,session_data,diagnosis_format);
       });
     }
     else {
@@ -125,12 +118,12 @@ app.post('/query',function (req,res) {
            res.cookie('id',JSON.stringify(idr));
            id=idr;
            console.log("ID assignment :",idr);
-           api_handler(id,req,res,session_data);
+           api_handler(id,req,res,session_data,diagnosis_format);
          });
        }
        else {
          session_data=sess;
-         api_handler(id,req,res,session_data);
+         api_handler(id,req,res,session_data,diagnosis_format);
        }
       });
     }
@@ -171,7 +164,7 @@ app.listen(app.get('port'), app.get('ip'), function() {
 });
 
 
-function api_handler(id,req,res,session_data) {
+function api_handler(id,req,res,session_data,diagnosis_format) {
 
   diagnosis_format = session_data.diagnosis_format;
 
