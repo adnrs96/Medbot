@@ -1,76 +1,151 @@
 var express = require('express');
+var app = express();
 var bodyParser = require('body-parser');
 var spawn = require('child_process').spawn;
-var natural = require('natural');
-tokenizer = new natural.WordTokenizer();
-var shrtntodise = require("./modules/sympt2dise.js");
-var app = express(),data1 = [1,2,3,4,5,6,7,8,9];
+var nlp = require('natural');
+//var shrtntodise = require("./modules/sympt2dise.js");
 var request = require('request');
-
+var jsonfile = require("./modules/data.json");
 
 var apidata = "";
-/*var options = {
-  url: 'https://api.infermedica.com/v2/diagnosis',
-  method:'POST',
-  json:true,
-  headers: {
-  app_id:'f1308345',
-  app_key:'abb713ecd3ddecf6106ecf9118bfacde'
-  },
-  body:{}
-  };
-  var options1 = {
-    url: 'https://api.infermedica.com/v2/symptoms',
-    method:'GET',
-    json:true,
-    headers: {
-    app_id:'f1308345',
-    app_key:'abb713ecd3ddecf6106ecf9118bfacde'
-    }
-    };
-    var options2 = {
-      url: 'https://api.infermedica.com/v2/search?phrase=',
-      method:'GET',
-      json:true,
-      headers: {
-      app_id:'f1308345',
-      app_key:'abb713ecd3ddecf6106ecf9118bfacde'
-      }
-      };
-  var evi_format = {
-  "id": "",
-  "choice_id": "present"
-  };
-
-  var diagnosis_format = {
-    "sex": "",
-    "age": "",
-    "evidence": []
-  };*/
+var symlist = [] ;
+var probable_conditions = [];
+var resp_from_api= "";
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', (process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080));
 app.set('ip',(process.env.IP   || process.env.OPENSHIFT_NODEJS_IP  || '0.0.0.0'));
-//var python_name = 'python';
-/*if(process.env.MEDBOT_SERVICE_HOST)
-{
-  python_name='/var/lib/openshift/57c2ff777628e1c6210000af/app-root/data/bin/python';
-}*/
+
 app.use(express.static(__dirname +'/CSS'));
 app.use(express.static(__dirname +'/JS'));
 app.use(express.static(__dirname +'/SCSS'));
 app.use(express.static(__dirname +'/views'));
 app.use(express.static(__dirname +'/images'));
+
 app.post('/query',function (req,res) {
 
-  /*diagnosis_format = shrtntodise.restoreSessionVariables('staticuser');
-  if(!diagnosis_format)
-  diagnosis_format= {
-    "sex": "",
-    "age": "",
-    "evidence": []
-  };*/
+  console.log(req.body.key);
+  var symptom;
+  var py = spawn('python3',['temp.py']);
+
+  if(req.body.key == 'exit'){
+    console.log("Entered exit");
+
+    py.stdout.on('data', function(data){
+        apidata = " ";
+        apidata += data.toString();
+        apidata = JSON.parse(apidata);
+        //console.log(typeof apidata);
+        //console.log(apidata.symptom);
+        probable_conditions = apidata.conditions.slice(0).sort(function(a, b) {
+              return b.probability - a.probability;
+        }).slice(0,4);
+        console.log(probable_conditions)
+        symlist.length = 0;
+        resp_from_api = "Probable conditions depending on your symptoms:";
+        for(var i = 0; i < probable_conditions.length; i++){
+          resp_from_api += "(" + (i+1).toString() + ") " + probable_conditions[i].name + " Chances: " + (probable_conditions[i].probability*100) + "%" ;
+        }
+        //for(var i = 0; i < apidata.question.items.length; i++)
+        //  resp_from_api += "(" + (i+1).toString() + ") " + apidata.question.items[i].name + " " ;
+        symlist.length = 0;
+        apidata = "";
+        res.json({key:resp_from_api});
+    });
+
+    /*py.stdout.on('end', function(){
+      apidata = JSON.parse(apidata);
+      //console.log(typeof apidata);
+      console.log(apidata.symptom);
+      probable_conditions = apidata.conditions.slice(0).sort(function(a, b) {
+            return b.probability - a.probability;
+      }).slice(0,4);
+      symlist.length = 0;
+      resp_from_api = "Probable conditions depending on your symptoms:";
+      for(var i = 0; i < probable_conditions; i++){
+        resp_from_api += "(" + (i+1).toString() + ") " + probable_conditions[i].name + " " ;
+      }
+      //for(var i = 0; i < apidata.question.items.length; i++)
+      //  resp_from_api += "(" + (i+1).toString() + ") " + apidata.question.items[i].name + " " ;
+
+      res.json({key:resp_from_api});
+    });*/
+
+    py.stderr.on('data',function (data) {
+          console.log('err data: ' + data);
+      }
+    );
+
+    py.stdin.write(JSON.stringify(symlist));
+    py.stdin.end();
+  }
+  else{
+
+  if(!apidata){
+    console.log("initial");
+    symptom = jsonfile.map(function(item){
+      if((10 * nlp.JaroWinklerDistance(req.body.key, item.name)) > 6)
+        return { name: item.name, id:item.id, match:(10 * nlp.JaroWinklerDistance(req.body.key,item.name))};
+    }).sort(function(a,b){ return b.match - a.match;})[0].id;
+    console.log("symptom", symptom);
+    symlist.push({id: symptom, choice_id: 'present'});
+
+  }
+  else{
+    //console.log(apidata.question.items)
+
+    for(var i = 0; i < apidata.question.items.length; i++){
+      if(apidata.question.items[i].name == req.body.key || i == (req.body.key - 1) || req.body.key == "Yes" || req.body.key == "yes"){
+          symlist.push({id:apidata.question.items[i].id , choice_id: 'present'});
+      }
+      else{
+         symlist.push({id:apidata.question.items[i].id , choice_id: 'absent'});
+      }
+    }
+    //console.log("symptom", symptom);
+  }
+
+  console.log("Send these symp to python code:", symlist);
+
+  py.stdout.on('data', function(data){
+      //console.log("1");
+      apidata = "";
+      apidata += data.toString();
+      //console.log(apidata);
+      apidata = JSON.parse(apidata);
+
+      //console.log(apidata.symptoms);
+      console.log(apidata.symptom)
+      resp_from_api = apidata.question.text;
+      if(apidata.question.items.length > 1){
+      for(var i = 0; i < apidata.question.items.length; i++)
+        resp_from_api += "(" + (i+1).toString() + ") " + apidata.question.items[i].name + " " ;
+      }
+      res.json({key:resp_from_api});
+  });
+
+  /*py.stdout.on('end', function(){
+    console.log("2");
+    apidata = JSON.parse(apidata);
+
+    //console.log(apidata.symptoms);
+    console.log(apidata.symptom)
+    resp_from_api = apidata.question.text;
+    if(apidata.question.items.length > 1){
+    for(var i = 0; i < apidata.question.items.length; i++)
+      resp_from_api += "(" + (i+1).toString() + ") " + apidata.question.items[i].name + " " ;
+    }
+    res.json({key:resp_from_api});
+  });*/
+
+  console.log("3");
+  py.stdin.write(JSON.stringify(symlist));
+  py.stdin.end();
+
+ }
+
+  /*----------------------------------------------
   var py = spawn('python3',['temp.py']);
   console.log("Message from client recieved and says ",req.body.key);
 
@@ -86,8 +161,9 @@ app.post('/query',function (req,res) {
   });
 
 
-  py.stdin.write(req.body.key);
+  py.stdin.write(req.body.key + "\n" + symdata);
   py.stdin.end();
+  ----------------------------------------*/
 
 });
 
