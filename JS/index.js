@@ -4,6 +4,7 @@ var $messages = $('.messages-content'),
 
 $(window).load(function() {
   $messages.mCustomScrollbar();
+  startnewfunc();
   setTimeout(function() {
     fakeMessage('Hi there, I\'m MedBot you own virtual healthcare assistant');
   }, 100);
@@ -91,4 +92,20 @@ function fakeMessage(msg) {
     i++;
   }, 1000 + (Math.random() * 20) * 100);
 
+}
+
+function startnewfunc() {
+  msg = 'startnew';
+  $.ajax({
+          url: "http://"+window.location.host+"/cookclearquery",
+        dataType: 'json',
+        method: "POST",
+        data: { key:msg }
+        })
+        .done(function(Data) {
+        console.log(Data.key);
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+          alert(textStatus);
+        });
 }

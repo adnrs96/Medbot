@@ -60,7 +60,30 @@ app.use(express.static(__dirname +'/SCSS'));
 app.use(express.static(__dirname +'/views'));
 app.use(express.static(__dirname +'/images'));
 var session_data = {};
+api.post('/cookclearquery',function (req,res) {
 
+  if(clearcook.test(req.body.key))
+  {
+    var id = req.cookies.id;
+    console.log("User id :",id);
+    try{
+   	id=JSON.parse(id);
+   	}
+   	catch(e)
+   	{
+   		console.log(e);
+   	}
+    session_data = {};
+    session_data.diagnosis_format=diagnosis_format;
+    shrtntodise.updateSessionVariables(null,session_data,function(idr){
+      res.cookie('id',JSON.stringify(idr));
+      id=idr;
+      console.log("ID assignment :",idr);
+      res.json({key:"Cleared"});
+    });
+  }
+
+});
 app.post('/query',function (req,res) {
   var diagnosis_format = {
     "sex": "",
