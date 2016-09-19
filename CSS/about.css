@@ -119,7 +119,7 @@ background:lightslategrey;}
  margin: 10px auto;
  text-transform: lowercase;
  line-height: 145%;
- font-size: 16pt;
+ font-size: 25px;
  top:70vh;
  position:absolute;
  right:0;
@@ -133,7 +133,7 @@ background:lightslategrey;}
   pre:first-letter{
                text-transform: uppercase;
           }
-        p {
+        pre {
         color: green;
         font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
  letter-spacing:0.1em;
@@ -141,7 +141,7 @@ background:lightslategrey;}
  margin: 10px auto;
  text-transform: lowercase;
  line-height: 145%;
- font-size: 16pt;
+ font-size: 20px;
  top:80vh;
  position:absolute;
  right:0;
