@@ -360,7 +360,7 @@ function api_request_handler(options,session_data,diagnosis_format,req,res,id) {
             customresponce+='<br> Could you specify from below symptoms if any is present<br>';
             for(var i=0;i<body.question.items.length;i++)
             {
-              customresponce+='('+(i+1)+')&nbsp'+body.question.items[i].name+'<br>';
+              customresponce+=body.question.items[i].name+'<br>';
             }
           }
           res.json({key:customresponce});
@@ -371,7 +371,7 @@ function api_request_handler(options,session_data,diagnosis_format,req,res,id) {
           customresponce+='<br> Could you specify from below symptoms if any is present<br>';
           for(var i=0;i<body.question.items.length;i++)
           {
-            customresponce+='('+(i+1)+')&nbsp'+body.question.items[i].name+'<br>';
+            customresponce+=body.question.items[i].name+'<br>';
           }
           res.json({key:customresponce});
           session_data.qtype=body.question;
