@@ -108,7 +108,29 @@ font-family: 'satisfy', sans-serif;
 background:lightslategrey;}
 
 
-  pre,  p:first-letter{
+    p:first-letter{
+               text-transform: uppercase;
+          }
+        p {
+        color: green;
+        font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
+ letter-spacing:0.1em;
+ text-align:center;
+ margin: 10px auto;
+ text-transform: lowercase;
+ line-height: 145%;
+ font-size: 16pt;
+ top:70vh;
+ position:absolute;
+ right:0;
+ left:0;
+ font-weight:bold;
+ font-variant: small-caps;
+        }
+        
+        
+        
+  pre:first-letter{
                text-transform: uppercase;
           }
         p {
@@ -126,4 +148,6 @@ background:lightslategrey;}
  left:0;
  font-weight:bold;
  font-variant: small-caps;
-        }
+        }        
+        
+
