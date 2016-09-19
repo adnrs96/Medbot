@@ -44,6 +44,7 @@ font-family: 'Lato', sans-serif;
 }
 
 h3{
+top:50vh;
 font-family:  'Hoefler Text', Georgia, 'Times New Roman', serif;
 font-weight: normal;
 font-size: 1.75em;
@@ -52,7 +53,6 @@ line-height: 1.1em;
 margin:0px;
 text-align: center;
 color:#15317E;
-top:50vh;
 }
 
 
