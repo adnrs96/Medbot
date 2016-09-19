@@ -7,15 +7,15 @@ padding:0;
 
 
 
-#imgcontainer img{
+/*#imgcontainer img{
 width:100%;
 height:100vh;
-opacity:0.6;}
+opacity:0.6;}*/
 
 h1{
 text-align:center;
-font-style:italic;
-color:#af111c;
+font-style:none;
+color:#191970;
 font-size:50px;
 position:absolute;
 top:30vh;
@@ -91,12 +91,21 @@ font-family: 'satisfy', sans-serif;
 background:lightslategrey;}
 
 
-p{
-color:green;
-font-family:'tahoma';
-text-align:center;
-top:80vh;
-position:absolute;
-right:0;
-left:0;
-font-family: 'satisfy', sans-serif;}
+   p:first-letter{
+               text-transform: uppercase;
+          }
+        p {
+        color: green;
+        font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
+ letter-spacing:0.1em;
+ text-align:center;
+ margin: 40px auto;
+ text-transform: lowercase;
+ line-height: 145%;
+ font-size: 14pt;
+ top:80vh;
+ position:absolute;
+ right:0;
+ left:0;
+ font-variant: small-caps;
+        }
