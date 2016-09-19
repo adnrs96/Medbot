@@ -95,7 +95,7 @@ background:lightslategrey;}
                text-transform: uppercase;
           }
         p {
-        color: #424242;
+        color: green;
         font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
  letter-spacing:0.1em;
  text-align:center;
@@ -103,5 +103,9 @@ background:lightslategrey;}
  text-transform: lowercase;
  line-height: 145%;
  font-size: 14pt;
+ top:80vh;
+ position:absolute;
+ right:0;
+ left:0;
  font-variant: small-caps;
         }
