@@ -274,6 +274,17 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
           {
             var new_evi_form = evi_format;
             new_evi_form.id=symlist[i];
+            if(session_data.qtype){
+              if(session_data.qtype.items[i].name == req.body.key || i == (req.body.key - 1) || req.body.key == "Yes" || req.body.key == "yes"){
+                  new_evi_form.choice_id='present';
+              }
+              else{
+                 new_evi_form.choice_id='absent';
+              }
+            }
+            else{
+               new_evi_form.choice_id='absent';
+            }
             diagnosis_format.evidence.push(new_evi_form);
           }
           options.body=diagnosis_format;
