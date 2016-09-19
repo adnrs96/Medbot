@@ -96,7 +96,10 @@ nav a {
   font-size: 18px;
   line-height: 1.35;
 }
-
+.dev
+{
+	cursor: pointer; cursor: hand;
+}
 
 #submit {
   height: 50px;
