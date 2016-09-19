@@ -99,13 +99,14 @@ background:lightslategrey;}
         font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
  letter-spacing:0.1em;
  text-align:center;
- margin: 40px auto;
+ margin: 10px auto;
  text-transform: lowercase;
  line-height: 145%;
- font-size: 14pt;
+ font-size: 16pt;
  top:80vh;
  position:absolute;
  right:0;
  left:0;
+ font-weight:bold;
  font-variant: small-caps;
         }
