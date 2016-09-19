@@ -86,13 +86,14 @@ Chat Title
   padding: 10px 10px 10px 50px;
 }
 .chat-title h1, .chat-title h2 {
-  font-weight: normal;
+  font-weight: high;
   font-size: 10px;
+  letter-spacing: 2px;
   margin: 0;
   padding: 0;
 }
 .chat-title h2 {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 8px;
   letter-spacing: 1px;
 }
@@ -122,7 +123,7 @@ Messages
   -webkit-flex: 1 1 auto;
       -ms-flex: 1 1 auto;
           flex: 1 1 auto;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.9);
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -216,7 +217,7 @@ Messages
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.9);
   z-index: 2;
   margin-top: 4px;
   -webkit-animation: ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite;
@@ -243,7 +244,7 @@ Messages
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.9);
   z-index: 2;
   margin-top: 4px;
   -webkit-animation: ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite;
@@ -261,7 +262,7 @@ Messages
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.9);
   z-index: 2;
   margin-top: 4px;
   -webkit-animation: ball 0.45s cubic-bezier(0, 0, 0.15, 1) alternate infinite;
@@ -289,7 +290,7 @@ Message Box
   border: none;
   outline: none !important;
   resize: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 11px;
   height: 17px;
   margin: 0;
@@ -315,6 +316,26 @@ Message Box
   outline: none !important;
   -webkit-transition: background .2s ease;
   transition: background .2s ease;
+}
+.message-submit2 {
+  position: absolute;
+  z-index: 1;
+  top: 9px;
+  right: 10px;
+  color: #fff;
+  border: none;
+  background: #248A52;
+  font-size: 10px;
+  text-transform: uppercase;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 10px;
+  outline: none !important;
+  -webkit-transition: background .2s ease;
+  transition: background .2s ease;
+}
+.message-submit2:hover {
+  background: #1D7745;
 }
 .message-box .message-submit:hover {
   background: #1D7745;

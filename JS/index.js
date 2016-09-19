@@ -5,7 +5,7 @@ var $messages = $('.messages-content'),
 $(window).load(function() {
   $messages.mCustomScrollbar();
   setTimeout(function() {
-    fakeMessage('Hi there, I\'m MedBot and you?');
+    fakeMessage('Hi there, I\'m MedBot your own virtual healthcare assitant');
   }, 100);
 });
 
@@ -51,6 +51,22 @@ function insertMessage() {
 
 $('.message-submit').click(function() {
   insertMessage();
+});
+
+$('.message-submit2').click(function() {
+ msg = 'startnew';
+  $.ajax({
+          url: "http://"+window.location.host+"/query",
+        dataType: 'json',
+        method: "POST",
+        data: { key:msg }
+        })
+        .done(function(Data) {
+        fakeMessage(Data.key);
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+          alert(textStatus);
+        });
 });
 
 $(window).on('keydown', function(e) {
