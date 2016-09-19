@@ -120,11 +120,7 @@ background:lightslategrey;}
  text-transform: lowercase;
  line-height: 145%;
  font-size: 30px;
-<<<<<<< HEAD
  top:75vh;
-=======
- top:70vh;
->>>>>>> 88cf244455c79ee0ce55dbd1c08ee9fb85e9b8a4
  position:absolute;
  right:0;
  left:0;
@@ -146,11 +142,10 @@ background:lightslategrey;}
  text-transform: lowercase;
  line-height: 145%;
  font-size: 20px;
-<<<<<<< HEAD
+
  top:83vh;
-=======
- top:80vh;
->>>>>>> 88cf244455c79ee0ce55dbd1c08ee9fb85e9b8a4
+
+
  position:absolute;
  right:0;
  left:0;
