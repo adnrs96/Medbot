@@ -12,6 +12,7 @@ app.use(cookieParser());
 var maletest = /male/i;
 var femaletest = /female/i;
 var agetest = /ageis/i;
+var ageextr = /\d+/g;
 var clearcook = /startnew/i;
 var buffer = '';
 var options = {
@@ -84,7 +85,7 @@ app.post('/cookclearquery',function (req,res) {
       res.cookie('id',JSON.stringify(idr));
       id=idr;
       console.log("ID assignment :",idr);
-      res.json({key:"Cleared"});
+      res.json({key:"Cleared",conend:0});
     });
   }
 
@@ -175,11 +176,11 @@ app.get('/fillData',function(req,res){
       body.forEach(function(data) {
           shrtntodise.populateDBWithSymptoms(data);
       });
-      res.json(body);
+      res.json({body,conend:0});
     }
     else {
       console.log("Problem with data retrieval");
-      res.json("Problem");
+      res.json({key:"Problem",conend:0});
     }
 
   });
@@ -222,22 +223,29 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
 
    if(agetest.test(req.body.key))
   {
-    var ageed = req.body.key.split('ageis')[1].split(' ')[0];
+    var ageed = parseInt(req.body.key.match(ageextr)[0]);
     diagnosis_format['age']=ageed;
     session_data.diagnosis_format=diagnosis_format;
     shrtntodise.updateSessionVariables(id,session_data);
-    res.json({key:"Fine lets begin your diagnosis"});
+    res.json({key:"Fine lets begin your diagnosis",conend:0});
   }
   else {
 
     var symlist = [];//tokenizer.tokenize(req.body.key);//req.body.key.tokenizeAndStem();
 
     console.log("initial");
-    var symptomonlyfirst = jsonfile.map(function(item){
-      if((10 * natural.JaroWinklerDistance(req.body.key, item.name)) > 6)
-        return { name: item.name, id:item.id, match:(10 * natural.JaroWinklerDistance(req.body.key,item.name))};
-    }).sort(function(a,b){ return b.match - a.match;})[0].id;
-    console.log("symptom", symptomonlyfirst);
+    try{
+      var symptomonlyfirst = jsonfile.map(function(item){
+        if((10 * natural.JaroWinklerDistance(req.body.key, item.name)) > 6)
+          return { name: item.name, id:item.id, match:(10 * natural.JaroWinklerDistance(req.body.key,item.name))};
+      }).sort(function(a,b){ return b.match - a.match;})[0].id;
+      console.log("symptom", symptomonlyfirst);
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
+
     symlist.push({id: symptomonlyfirst, choice_id: 'present'});
 
     console.log("Here:",diagnosis_format['sex']);
@@ -247,11 +255,11 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
     {
       if(session_data['sexf'])
       {
-        res.json({key:"I am sorry but i need that information"});
+        res.json({key:"I am sorry but i need that information",conend:0});
         shrtntodise.updateSessionVariables(id,session_data);
       }
       else {
-        res.json({key:"Could you let me know your sex enter as 'male' or 'female'"});
+        res.json({key:"Could you let me know your sex enter as 'male' or 'female'",conend:0});
         session_data['sexf']=1;
         shrtntodise.updateSessionVariables(id,session_data);
       }
@@ -260,11 +268,11 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
     {
       if(session_data['agef'])
       {
-        res.json({key:"I am sorry but i need that information"});
+        res.json({key:"I am sorry but i need that information",conend:0});
         shrtntodise.updateSessionVariables(id,session_data);
       }
       else {
-        res.json({key:"Could you let me know your Age Please text me in following way So if you age is say 29 then send Ageis29 "});
+        res.json({key:"Could you let me know your Age Please text me in following way So if you age is say 29 then send Ageis29 ",conend:0});
         session_data['agef']=1;
         shrtntodise.updateSessionVariables(id,session_data);
       }
@@ -353,6 +361,21 @@ function api_request_handler(options,session_data,diagnosis_format,req,res,id) {
             {
               customresponce+=body.conditions[i].name+'<br>';
             }
+            customresponce+='<br><br> Hope it helped.';
+            diagnosis_format = {
+              "sex": "",
+              "age": "",
+              "evidence": []
+            };
+            session_data = {};
+            session_data['question_count']=0;
+            session_data.diagnosis_format=diagnosis_format;
+            shrtntodise.updateSessionVariables(null,session_data,function(idr){
+              res.cookie('id',JSON.stringify(idr));
+              id=idr;
+              console.log("ID assignment :",idr);
+              res.json({key:customresponce,conend:1});
+            });
           }
           else {
             customresponce = 'Can you describe more about your condition<br>Let me give you some symptoms you might wanna tell about<br>'+body.question.text;
@@ -362,8 +385,9 @@ function api_request_handler(options,session_data,diagnosis_format,req,res,id) {
             {
               customresponce+=body.question.items[i].name+'<br>';
             }
+            res.json({key:customresponce,conend:0});
           }
-          res.json({key:customresponce});
+
         }
         else {
           var customresponce = body.question.text;
@@ -373,7 +397,7 @@ function api_request_handler(options,session_data,diagnosis_format,req,res,id) {
           {
             customresponce+=body.question.items[i].name+'<br>';
           }
-          res.json({key:customresponce});
+          res.json({key:customresponce,conend:0});
           session_data.qtype=body.question;
           console.log("question_count before: ",session_data.question_count);
           session_data.question_count= parseInt(session_data.question_count)+1;
@@ -381,12 +405,12 @@ function api_request_handler(options,session_data,diagnosis_format,req,res,id) {
         }
       }
       else {
-        res.json({key:"Sorry but i do not understand that Try something else"});
+        res.json({key:"Sorry but i do not understand that Try something else",conend:0});
       }
     }
     catch(err){
       console.log(err);
-      res.json({key:"Some error occured while connecting to brain"});
+      res.json({key:"Some error occured while connecting to brain",conend:0});
     }
     session_data.diagnosis_format=diagnosis_format;
     shrtntodise.updateSessionVariables(id,session_data);

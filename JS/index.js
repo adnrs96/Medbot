@@ -43,6 +43,11 @@ function insertMessage() {
         })
         .done(function(Data) {
         fakeMessage(Data.key);
+        if(Data.conend==1)
+        {
+          $("#text_input").attr('readonly','readonly');
+          $("#text_input").val('This Diagnosis is complete Please use the start new Diagnosis button to start with a new one ');
+        }
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
           alert(textStatus);
