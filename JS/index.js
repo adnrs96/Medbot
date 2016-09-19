@@ -55,18 +55,7 @@ $('.message-submit').click(function() {
 
 $('.message-submit2').click(function() {
  msg = 'startnew';
-  $.ajax({
-          url: "http://"+window.location.host+"/query",
-        dataType: 'json',
-        method: "POST",
-        data: { key:msg }
-        })
-        .done(function(Data) {
-        fakeMessage(Data.key);
-        })
-        .fail(function(jqXHR, textStatus, errorThrown) {
-          alert(textStatus);
-        });
+ 
 });
 
 $(window).on('keydown', function(e) {
