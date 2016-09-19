@@ -90,7 +90,7 @@ font-family: 'satisfy', sans-serif;
 .button-primary{
 cursor: pointer; cursor: hand;
 float:left;
-padding:10px 20px 15px 20px;
+padding:18px 35px 18px 20px;
 border-radius:10px;
 overflow:hidden;
 box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
@@ -120,7 +120,7 @@ background:lightslategrey;}
  text-transform: lowercase;
  line-height: 145%;
  font-size: 30px;
- top:80vh;
+ top:75vh;
  position:absolute;
  right:0;
  left:0;
@@ -142,7 +142,7 @@ background:lightslategrey;}
  text-transform: lowercase;
  line-height: 145%;
  font-size: 20px;
- top:90vh;
+ top:83vh;
  position:absolute;
  right:0;
  left:0;

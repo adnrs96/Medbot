@@ -6,7 +6,7 @@ $(window).load(function() {
   $messages.mCustomScrollbar();
   startnewfunc();
   setTimeout(function() {
-    fakeMessage('Hi there, I\'m MedBot you own virtual healthcare assistant');
+    fakeMessage('Hi there, I\'m MedBot you\'r own virtual healthcare assistant.');
   }, 100);
 });
 
