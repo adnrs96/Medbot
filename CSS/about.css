@@ -7,11 +7,32 @@ padding:0;
 
 
 
-/*#imgcontainer img{
-width:100%;
-height:100vh;
-opacity:0.6;}*/
-
+#imgcontainer img{
+width:90px;
+height:90px;
+top:100px;
+position:absolute;
+left:0px;
+right:600px;
+margin-left:auto;
+margin-right:auto;
+display:inline-block;
+text-decoration:none;
+font-family: 'satisfy', sans-serif;
+}
+#imgcontainer2 img{
+width:120px;
+height:90px;
+top:150px;
+position:absolute;
+left:0px;
+right:650px;
+margin-left:auto;
+margin-right:auto;
+display:inline-block;
+text-decoration:none;
+font-family: 'satisfy', sans-serif;
+}
 body{
 background: rgba(255,255,255,1);
 background: -moz-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.99) 58%, rgba(255,255,255,0.99) 63%, rgba(194,229,222,0.99) 100%);
@@ -90,12 +111,12 @@ font-family: 'satisfy', sans-serif;
 .button-primary{
 cursor: pointer; cursor: hand;
 float:left;
-padding:18px 35px 18px 20px;
+padding:5px 10px 5px 7.5px;
 border-radius:10px;
 overflow:hidden;
 box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
 background:#6699CC;
-font:20px "Trebuchet MS", sans-serif;
+font:13px "Trebuchet MS", sans-serif;
 color:#fff;
 text-decoration: none;
 font-family: 'satisfy', sans-serif;
