@@ -119,8 +119,8 @@ background:lightslategrey;}
  margin: 10px auto;
  text-transform: lowercase;
  line-height: 145%;
- font-size: 25px;
- top:70vh;
+ font-size: 30px;
+ top:80vh;
  position:absolute;
  right:0;
  left:0;
@@ -142,7 +142,7 @@ background:lightslategrey;}
  text-transform: lowercase;
  line-height: 145%;
  font-size: 20px;
- top:80vh;
+ top:90vh;
  position:absolute;
  right:0;
  left:0;
