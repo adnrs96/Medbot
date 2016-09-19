@@ -5,7 +5,7 @@ var $messages = $('.messages-content'),
 $(window).load(function() {
   $messages.mCustomScrollbar();
   setTimeout(function() {
-    fakeMessage('Hi there, I\'m MedBot and you?');
+    fakeMessage('Hi there, I\'m MedBot your own virtual healthcare assistant?');
   }, 100);
 });
 
