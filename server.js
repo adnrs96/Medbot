@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 var spawn = require('child_process').spawn;
 var natural = require('natural');
 tokenizer = new natural.WordTokenizer();
+var jsonfile = require("./modules/data.json");
 var shrtntodise = require("./modules/sympt2dise.js");
 var app = express(),data1 = [1,2,3,4,5,6,7,8,9];
 var request = require('request');
@@ -226,7 +227,16 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
   }
   else {
 
-    var symlist = req.body.key.tokenizeAndStem();
+    var symlist = [];//tokenizer.tokenize(req.body.key);//req.body.key.tokenizeAndStem();
+
+    console.log("initial");
+    var symptomonlyfirst = jsonfile.map(function(item){
+      if((10 * natural.JaroWinklerDistance(req.body.key, item.name)) > 6)
+        return { name: item.name, id:item.id, match:(10 * natural.JaroWinklerDistance(req.body.key,item.name))};
+    }).sort(function(a,b){ return b.match - a.match;})[0].id;
+    console.log("symptom", symptomonlyfirst);
+    symlist.push({id: symptomonlyfirst, choice_id: 'present'});
+
     console.log("Here:",diagnosis_format['sex']);
     session_data.diagnosis_format=diagnosis_format;
     console.log(session_data);
@@ -258,12 +268,12 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
     }
     else {
 
-      for(var i=0;i<symlist.length;i++)
+      /*for(var i=0;i<symlist.length;i++)
       {
         symlist[i]=new RegExp(symlist[i],"i");
       }
       console.log(symlist);
-
+      */
       if(session_data.qtype && session_data.qtype.items.length>0)
       {
         console.log("Choice symptom code executing");
@@ -278,6 +288,7 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
              new_evi_form.choice_id='absent';
           }
           diagnosis_format.evidence.push(new_evi_form);
+          console.log(new_evi_form);
         }
         options.body=diagnosis_format;
         api_request_handler(options,session_data,diagnosis_format,req,res,id);
@@ -285,7 +296,7 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
       }
       else {
         console.log("Symptoms Filter code executing");
-        shrtntodise.isSymtomFilter(symlist,function(err,symlist){
+        /*shrtntodise.isSymtomFilter(symlist,function(err,symlist){
           if(err)
           {
             console.log(err);
@@ -303,8 +314,10 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
               options.body=diagnosis_format;
               api_request_handler(options,session_data,diagnosis_format,req,res,id);
           }
-        });
-
+        });*/
+        diagnosis_format.evidence.push(symlist[0]);
+        options.body=diagnosis_format;
+        api_request_handler(options,session_data,diagnosis_format,req,res,id);
       }
   }
 }
