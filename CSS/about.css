@@ -108,7 +108,7 @@ font-family: 'satisfy', sans-serif;
 background:lightslategrey;}
 
 
-   p:first-letter{
+  pre,  p:first-letter{
                text-transform: uppercase;
           }
         p {
