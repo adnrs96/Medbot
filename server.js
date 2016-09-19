@@ -263,96 +263,114 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
         symlist[i]=new RegExp(symlist[i],"i");
       }
       console.log(symlist);
-      shrtntodise.isSymtomFilter(symlist,function(err,symlist){
-        if(err)
-        {
-          console.log(err);
-        }
-        else {
-          console.log(symlist);
-          for(var i=0;i<symlist.length;i++)
+
+      if(session_data.qtype && session_data.qtype.items.length>0)
+      {
+        console.log("Choice symptom code executing");
+        for(var i = 0; i < session_data.qtype.items.length; i++){
+          var new_evi_form = evi_format;
+          new_evi_form.id=session_data.qtype.items[i].id;
+          if(session_data.qtype.items[i].name == req.body.key || i == (req.body.key - 1) || req.body.key == "Yes" || req.body.key == "yes")
           {
-            var new_evi_form = evi_format;
-            new_evi_form.id=symlist[i];
-            if(session_data.qtype){
-              if(session_data.qtype.items[i].name == req.body.key || i == (req.body.key - 1) || req.body.key == "Yes" || req.body.key == "yes"){
-                  new_evi_form.choice_id='present';
-              }
-              else{
-                 new_evi_form.choice_id='absent';
-              }
-            }
-            else{
-               new_evi_form.choice_id='absent';
-            }
-            diagnosis_format.evidence.push(new_evi_form);
+              new_evi_form.choice_id='present';
           }
-          options.body=diagnosis_format;
-          request.post(options,function(err,responce,body){
-            try{
-              if(err)
-              {
-                console.log(err);
-              }
-              if(body)
-              {
-                console.log("Body says",body);
-                if(session_data.qtype)
-                console.log(session_data.qtype.text,"  :  ",body.question.text);
-                if(session_data.qtype && session_data.qtype.text==body.question.text)
-                {
-                  var customresponce = '';
-                  session_data.qtype=body.question;
-                  if(body.conditions.length>0)
-                  {
-                    customresponce='You could be suffering from following conditions<br>';
-                    for(var i=0;i<body.conditions.length;i++)
-                    {
-                      customresponce+=body.conditions[i].name+'<br>';
-                    }
-                  }
-                  else {
-                    customresponce = 'Can you describe more about your condition<br>Let me give you some symptoms you might wanna tell about<br>'+body.question.text;
-                    if(body.question.items.length)
-                    customresponce+='<br> Could you specify from below symptoms if any is present<br>';
-                    for(var i=0;i<body.question.items.length;i++)
-                    {
-                      customresponce+=body.question.items[i].name+'<br>';
-                    }
-                  }
-                  res.json({key:customresponce});
-                }
-                else {
-                  var customresponce = body.question.text;
-                  if(body.question.items.length)
-                  customresponce+='<br> Could you specify from below symptoms if any is present<br>';
-                  for(var i=0;i<body.question.items.length;i++)
-                  {
-                    customresponce+=body.question.items[i].name+'<br>';
-                  }
-                  res.json({key:customresponce});
-                  session_data.qtype=body.question;
-                }
-              }
-              else {
-                res.json({key:"Sorry but i do not understand that Try something else"});
-              }
-            }
-            catch(err){
-              console.log(err);
-              res.json({key:"Some error occured while connecting to brain"});
-            }
-            session_data.diagnosis_format=diagnosis_format;
-            shrtntodise.updateSessionVariables(id,session_data);
-          });
-
+          else{
+             new_evi_form.choice_id='absent';
+          }
+          diagnosis_format.evidence.push(new_evi_form);
         }
+        options.body=diagnosis_format;
+        api_request_handler(options,session_data,diagnosis_format,req,res,id);
 
-      });
+      }
+      else {
+        console.log("Symptoms Filter code executing");
+        shrtntodise.isSymtomFilter(symlist,function(err,symlist){
+          if(err)
+          {
+            console.log(err);
+          }
+          else
+          {
+              console.log(symlist);
+              for(var i=0;i<symlist.length;i++)
+              {
+                  var new_evi_form = evi_format;
+                  new_evi_form.id=symlist[i];
+                  new_evi_form.choice_id='present';
+                  diagnosis_format.evidence.push(new_evi_form);
+              }
+              options.body=diagnosis_format;
+              api_request_handler(options,session_data,diagnosis_format,req,res,id);
+          }
+        });
+
+      }
   }
 }
 }
 
+function api_request_handler(options,session_data,diagnosis_format,req,res,id) {
+
+  request.post(options,function(err,responce,body){
+    try{
+      if(err)
+      {
+        console.log(err);
+      }
+      if(body)
+      {
+        console.log("Body says",body);
+        if(session_data.qtype)
+        console.log(session_data.qtype.text,"  :  ",body.question.text);
+        if(session_data.qtype && session_data.qtype.text==body.question.text)
+        {
+          var customresponce = '';
+          session_data.qtype=body.question;
+          if(body.conditions.length>0)
+          {
+            customresponce='You could be suffering from following conditions<br>';
+            for(var i=0;i<body.conditions.length;i++)
+            {
+              customresponce+=body.conditions[i].name+'<br>';
+            }
+          }
+          else {
+            customresponce = 'Can you describe more about your condition<br>Let me give you some symptoms you might wanna tell about<br>'+body.question.text;
+            if(body.question.items.length)
+            customresponce+='<br> Could you specify from below symptoms if any is present<br>';
+            for(var i=0;i<body.question.items.length;i++)
+            {
+              customresponce+=body.question.items[i].name+'<br>';
+            }
+          }
+          res.json({key:customresponce});
+        }
+        else {
+          var customresponce = body.question.text;
+          if(body.question.items.length)
+          customresponce+='<br> Could you specify from below symptoms if any is present<br>';
+          for(var i=0;i<body.question.items.length;i++)
+          {
+            customresponce+=body.question.items[i].name+'<br>';
+          }
+          res.json({key:customresponce});
+          session_data.qtype=body.question;
+        }
+      }
+      else {
+        res.json({key:"Sorry but i do not understand that Try something else"});
+      }
+    }
+    catch(err){
+      console.log(err);
+      res.json({key:"Some error occured while connecting to brain"});
+    }
+    session_data.diagnosis_format=diagnosis_format;
+    shrtntodise.updateSessionVariables(id,session_data);
+  });
+
+}
 /*
 var py    = spawn(python_name, ['nlpserver.py']);
 var nlpdata='';
