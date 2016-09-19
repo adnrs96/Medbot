@@ -128,6 +128,7 @@ module.exports.restoreSessionVariables=function (id,callback)
 
 module.exports.updateSessionVariables=function (id,data,callback)
 {
+  //console.log("Data saving :",data);
   MongoClient.connect(url,function(err,db){
     if(err)
     {

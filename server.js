@@ -78,6 +78,7 @@ app.post('/cookclearquery',function (req,res) {
    		console.log(e);
    	}
     var session_data = {};
+    session_data['question_count']=0;
     session_data.diagnosis_format=diagnosis_format;
     shrtntodise.updateSessionVariables(null,session_data,function(idr){
       res.cookie('id',JSON.stringify(idr));
@@ -107,6 +108,7 @@ app.post('/query',function (req,res) {
    	}
     var session_data = {};
     session_data.diagnosis_format=diagnosis_format;
+    session_data['question_count']=0;
     shrtntodise.updateSessionVariables(null,session_data,function(idr){
       res.cookie('id',JSON.stringify(idr));
       id=idr;
@@ -127,6 +129,7 @@ app.post('/query',function (req,res) {
     }
     session_data = {};
     session_data.diagnosis_format=diagnosis_format;
+    session_data['question_count']=0;
     if(id==undefined)
     {
       shrtntodise.updateSessionVariables(null,session_data,function(idr){
@@ -205,7 +208,7 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
       "evidence": []
     };
   }
-  console.log(session_data);
+  //console.log(session_data);
   console.log("Message from client recieved and says ",req.body.key);
   natural.PorterStemmer.attach();
   if(maletest.test(req.body.key))
@@ -277,20 +280,22 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
       if(session_data.qtype && session_data.qtype.items.length>0)
       {
         console.log("Choice symptom code executing");
+        console.log(session_data.qtype.items);
         for(var i = 0; i < session_data.qtype.items.length; i++){
           var new_evi_form = evi_format;
           new_evi_form.id=session_data.qtype.items[i].id;
-          if(session_data.qtype.items[i].name == req.body.key || i == (req.body.key - 1) || req.body.key == "Yes" || req.body.key == "yes")
+          if(((10 * natural.JaroWinklerDistance(session_data.qtype.items[i].name, req.body.key)) > 6) || i == (req.body.key - 1) || req.body.key == "Yes" || req.body.key == "yes")
           {
               new_evi_form.choice_id='present';
           }
           else{
              new_evi_form.choice_id='absent';
           }
-          diagnosis_format.evidence.push(new_evi_form);
-          console.log(new_evi_form);
+          diagnosis_format.evidence.push({id:new_evi_form.id,choice_id:new_evi_form.choice_id});
+          //console.log(new_evi_form);
         }
         options.body=diagnosis_format;
+        console.log("diagnosis_format :",diagnosis_format.evidence);
         api_request_handler(options,session_data,diagnosis_format,req,res,id);
 
       }
@@ -315,8 +320,9 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
               api_request_handler(options,session_data,diagnosis_format,req,res,id);
           }
         });*/
-        diagnosis_format.evidence.push(symlist[0]);
+        diagnosis_format.evidence.push({id:symlist[0].id,choice_id:symlist[0].choice_id});
         options.body=diagnosis_format;
+        console.log(diagnosis_format.evidence);
         api_request_handler(options,session_data,diagnosis_format,req,res,id);
       }
   }
@@ -336,14 +342,14 @@ function api_request_handler(options,session_data,diagnosis_format,req,res,id) {
         console.log("Body says",body);
         if(session_data.qtype)
         console.log(session_data.qtype.text,"  :  ",body.question.text);
-        if(session_data.qtype && session_data.qtype.text==body.question.text)
+        if((session_data.qtype && session_data.qtype.text==body.question.text)||session_data.question_count>7)
         {
           var customresponce = '';
           session_data.qtype=body.question;
           if(body.conditions.length>0)
           {
             customresponce='You could be suffering from following conditions<br>';
-            for(var i=0;i<body.conditions.length;i++)
+            for(var i=0;i<body.conditions.length && i<4;i++)
             {
               customresponce+=body.conditions[i].name+'<br>';
             }
@@ -354,7 +360,7 @@ function api_request_handler(options,session_data,diagnosis_format,req,res,id) {
             customresponce+='<br> Could you specify from below symptoms if any is present<br>';
             for(var i=0;i<body.question.items.length;i++)
             {
-              customresponce+=body.question.items[i].name+'<br>';
+              customresponce+='('+(i+1)+')&nbsp'+body.question.items[i].name+'<br>';
             }
           }
           res.json({key:customresponce});
@@ -365,10 +371,13 @@ function api_request_handler(options,session_data,diagnosis_format,req,res,id) {
           customresponce+='<br> Could you specify from below symptoms if any is present<br>';
           for(var i=0;i<body.question.items.length;i++)
           {
-            customresponce+=body.question.items[i].name+'<br>';
+            customresponce+='('+(i+1)+')&nbsp'+body.question.items[i].name+'<br>';
           }
           res.json({key:customresponce});
           session_data.qtype=body.question;
+          console.log("question_count before: ",session_data.question_count);
+          session_data.question_count= parseInt(session_data.question_count)+1;
+          console.log("question_count updated: ",session_data.question_count);
         }
       }
       else {
