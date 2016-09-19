@@ -12,6 +12,22 @@ width:100%;
 height:100vh;
 opacity:0.6;}*/
 
+body{
+background: rgba(255,255,255,1);
+background: -moz-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.99) 58%, rgba(255,255,255,0.99) 63%, rgba(194,229,222,0.99) 100%);
+background: -webkit-gradient(left top, right top, color-stop(0%, rgba(255,255,255,1)), color-stop(58%, rgba(255,255,255,0.99)), color-stop(63%, rgba(255,255,255,0.99)), color-stop(100%, rgba(194,229,222,0.99)));
+background: -webkit-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.99) 58%, rgba(255,255,255,0.99) 63%, rgba(194,229,222,0.99) 100%);
+background: -o-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.99) 58%, rgba(255,255,255,0.99) 63%, rgba(194,229,222,0.99) 100%);
+background: -ms-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.99) 58%, rgba(255,255,255,0.99) 63%, rgba(194,229,222,0.99) 100%);
+background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0.99) 58%, rgba(255,255,255,0.99) 63%, rgba(194,229,222,0.99) 100%);
+filter:     progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#c2e5de', GradientType=1 );}
+
+
+
+
+
+
+
 h1{
 text-align:center;
 font-style:none;
@@ -28,16 +44,17 @@ font-family: 'Lato', sans-serif;
 }
 
 h3{
-text-align:center;
-font-family:'Lucida console';
-color:#af111c;
-text-size:25;
-position:absolute;
 top:50vh;
 right:0;
 left:0;
-font-family: 'Baloo Bhaina', sans-serif;
-
+position:absolute;
+font-family:  'Hoefler Text', Georgia, 'Times New Roman', serif;
+font-weight: normal;
+font-size: 1.75em;
+letter-spacing: .2em;
+line-height: 1.1em;
+text-align: center;
+color:#15317E;
 }
 
 
@@ -73,7 +90,7 @@ font-family: 'satisfy', sans-serif;
 .button-primary{
 cursor: pointer; cursor: hand;
 float:left;
-padding:10px 20px 15px 20px;
+padding:18px 35px 18px 20px;
 border-radius:10px;
 overflow:hidden;
 box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
@@ -91,7 +108,7 @@ font-family: 'satisfy', sans-serif;
 background:lightslategrey;}
 
 
-   p:first-letter{
+    p:first-letter{
                text-transform: uppercase;
           }
         p {
@@ -99,13 +116,41 @@ background:lightslategrey;}
         font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
  letter-spacing:0.1em;
  text-align:center;
- margin: 40px auto;
+ margin: 10px auto;
  text-transform: lowercase;
  line-height: 145%;
- font-size: 14pt;
- top:80vh;
+ font-size: 30px;
+ top:73vh;
  position:absolute;
  right:0;
  left:0;
+ font-weight:bold;
  font-variant: small-caps;
         }
+        
+        
+        
+  pre:first-letter{
+               text-transform: uppercase;
+          }
+        pre {
+        color: green;
+        font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
+ letter-spacing:0.1em;
+ text-align:center;
+ margin: 10px auto;
+ text-transform: lowercase;
+ line-height: 145%;
+ font-size: 20px;
+
+ top:78vh;
+
+
+ position:absolute;
+ right:0;
+ left:0;
+ font-weight:bold;
+ font-variant: small-caps;
+        }        
+        
+

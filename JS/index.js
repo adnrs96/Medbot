@@ -6,7 +6,7 @@ $(window).load(function() {
   $messages.mCustomScrollbar();
   startnewfunc();
   setTimeout(function() {
-    fakeMessage('Hi there, I\'m MedBot you own virtual healthcare assistant');
+    fakeMessage('Hi there, I\'m MedBot your own virtual healthcare assistant.');
   }, 100);
 });
 
@@ -54,19 +54,14 @@ $('.message-submit').click(function() {
   insertMessage();
 });
 $('.message-submit2').click(function() {
-  msg = 'startnew';
-  $.ajax({
-          url: "http://"+window.location.host+"/query",
-        dataType: 'json',
-        method: "POST",
-        data: { key:msg }
-        })
-        .done(function(Data) {
-        fakeMessage(Data.key);
-        })
-        .fail(function(jqXHR, textStatus, errorThrown) {
-          alert(textStatus);
-        });
+  /*$('.messages').empty();
+  $('.messages').append('<div class="messages-content"></div>');
+   $messages.mCustomScrollbar();
+ setTimeout(function() {
+    fakeMessage('Hi there, I\'m MedBot you own virtual healthcare assistant');
+  }, 100);*/
+ location.reload();
+ startnewfunc();
 });
 $(window).on('keydown', function(e) {
   if (e.which == 13) {

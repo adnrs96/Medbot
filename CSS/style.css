@@ -334,11 +334,11 @@ Message Box
   -webkit-transition: background .2s ease;
   transition: background .2s ease;
 }
-.message-submit2:hover {
-  background: #1D7745;
+.message-submit2:active {
+  background: #145230;
 }
-.message-box .message-submit:hover {
-  background: #1D7745;
+.message-box .message-submit:active {
+  background: #145230;
 }
 
 /*--------------------
