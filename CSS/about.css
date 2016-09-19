@@ -45,12 +45,13 @@ font-family: 'Lato', sans-serif;
 
 h3{
 top:50vh;
+right:0;
+left:0;
 font-family:  'Hoefler Text', Georgia, 'Times New Roman', serif;
 font-weight: normal;
 font-size: 1.75em;
 letter-spacing: .2em;
 line-height: 1.1em;
-margin:0px;
 text-align: center;
 color:#15317E;
 }
