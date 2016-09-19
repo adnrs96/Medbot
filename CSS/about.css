@@ -91,12 +91,17 @@ font-family: 'satisfy', sans-serif;
 background:lightslategrey;}
 
 
-p{
-color:green;
-font-family:'tahoma';
-text-align:center;
-top:80vh;
-position:absolute;
-right:0;
-left:0;
-font-family: 'satisfy', sans-serif;}
+   p:first-letter{
+               text-transform: uppercase;
+          }
+        p {
+        color: #424242;
+        font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
+ letter-spacing:0.1em;
+ text-align:center;
+ margin: 40px auto;
+ text-transform: lowercase;
+ line-height: 145%;
+ font-size: 14pt;
+ font-variant: small-caps;
+        }
