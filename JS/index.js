@@ -5,7 +5,7 @@ var $messages = $('.messages-content'),
 $(window).load(function() {
   $messages.mCustomScrollbar();
   setTimeout(function() {
-    fakeMessage('Hi there, I\'m MedBot your own virtual healthcare assitant');
+    fakeMessage('Hi there, I\'m MedBot your own virtual healthcare assistant?');
   }, 100);
 });
 
@@ -51,11 +51,6 @@ function insertMessage() {
 
 $('.message-submit').click(function() {
   insertMessage();
-});
-
-$('.message-submit2').click(function() {
- msg = 'startnew';
- 
 });
 
 $(window).on('keydown', function(e) {
