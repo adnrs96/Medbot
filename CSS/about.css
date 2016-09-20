@@ -117,7 +117,8 @@ nav a {
 
 
 #submit:hover {
-  background: #AE3C58;
+  background: #fff;
+  color: #000;
 }
 
 input:focus {
