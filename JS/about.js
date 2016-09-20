@@ -8,7 +8,7 @@ $('.chat').click(function() {
    $('<div class="spinner"></div>').appendTo("body");
      setTimeout(function() {
      	window.location = 'about.html';
-     },4000);
+     },2000);
 
 });
 
@@ -22,6 +22,6 @@ $('.dev').click(function() {
    $('<div class="spinner"></div>').appendTo("body");
      setTimeout(function() {
      	window.location = 'developers.html';
-     },4000);
+     },2000);
 
 });
