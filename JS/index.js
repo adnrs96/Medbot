@@ -22,6 +22,10 @@ function setDate(){
   d = new Date()
   
     m = d.getMinutes();
+    if(m<10){
+        m = '0' + m;
+        
+    }
     $('<div class="timestamp">' + d.getHours() + ':' + m + '</div>').appendTo($('.message:last'));
   
 }
