@@ -1,12 +1,23 @@
 
+h1{
 
-body {
-  background: url("https://images.freecreatives.com/wp-content/uploads/2015/03/old-yellow-brick-wall-background-matte1.jpg");
-  font: 15px/150% Georgia, "Times New Roman", Times, serif; 
-  background-attachment: fixed;
-  }
-
-
+    font-family: 'Lato', sans-serif;
+    color: #fff;
+    font-size: 50px;
+    border-bottom: solid;
+    border-bottom-width: thin;
+    padding-bottom: 30px;
+    margin-top: 31px;
+    max-width: 80%;
+    margin-left: 10%;
+}
+body{
+background: url("http://kurld.com/images/wallpapers/hd-website-backgrounds/hd-website-backgrounds-8.jpg");
+font: 15px/150% Georgia, "Times New Roman", Times, serif;
+background-attachment: fixed;
+background-size: cover;
+background-repeat: no-repeat;
+}
 @-webkit-keyframes flipInX {
   0% { -webkit-transform: perspective(400px) rotateX(90deg); }
 
