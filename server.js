@@ -223,11 +223,17 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
 
    if(agetest.test(req.body.key))
   {
-    var ageed = parseInt(req.body.key.match(ageextr)[0]);
-    diagnosis_format['age']=ageed;
-    session_data.diagnosis_format=diagnosis_format;
-    shrtntodise.updateSessionVariables(id,session_data);
-    res.json({key:"Fine lets begin your diagnosis",conend:0});
+    try{
+      var ageed = parseInt(req.body.key.match(ageextr)[0]);
+      diagnosis_format['age']=ageed;
+      session_data.diagnosis_format=diagnosis_format;
+      shrtntodise.updateSessionVariables(id,session_data);
+      res.json({key:"Fine lets begin your diagnosis",conend:0});
+    }
+    catch(err){
+      console.log("Error in age input");
+      res.json({key:"Please enter Age properly<br>Please text me in following way So if you age is say 29 then send Ageis29",conend:0});
+    }
   }
   else {
 
