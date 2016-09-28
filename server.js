@@ -198,7 +198,6 @@ app.listen(app.get('port'), app.get('ip'), function() {
 function api_handler(id,req,res,session_data,diagnosis_format) {
 
   diagnosis_format = session_data.diagnosis_format;
-
   if(!diagnosis_format)
   {
     session_data.sexf=false;
@@ -225,10 +224,31 @@ function api_handler(id,req,res,session_data,diagnosis_format) {
   {
     try{
       var ageed = parseInt(req.body.key.match(ageextr)[0]);
-      diagnosis_format['age']=ageed;
-      session_data.diagnosis_format=diagnosis_format;
-      shrtntodise.updateSessionVariables(id,session_data);
-      res.json({key:"Fine lets begin your diagnosis",conend:0});
+      if(ageed<1)
+      {
+        res.json({key:"Please give me a valid age.",conend:0});
+      }
+      else if(ageed>190)
+      {
+        res.json({key:'Please give me a valid age.<br>Funfact: Humans are not immortal.You may like to consider reading the following wiki article<br><a href="https://en.wikipedia.org/wiki/Oldest_people">Oldest People<a> ',conend:0});
+      }
+      else if(ageed>150)
+      {
+        res.json({key:'Please give me a valid age.<br>Do not try to become a tortoise',conend:0});
+      }
+      else if(ageed>122 && ageed<125)
+      {
+        diagnosis_format['age']=ageed;
+        session_data.diagnosis_format=diagnosis_format;
+        shrtntodise.updateSessionVariables(id,session_data);
+        res.json({key:"Interesting you have a lifespan greater than the longest human lifespan(122 years).<br>Fine lets begin your diagnosis",conend:0});
+      }
+      else {
+        diagnosis_format['age']=ageed;
+        session_data.diagnosis_format=diagnosis_format;
+        shrtntodise.updateSessionVariables(id,session_data);
+        res.json({key:"Fine lets begin your diagnosis",conend:0});
+      }
     }
     catch(err){
       console.log("Error in age input");
